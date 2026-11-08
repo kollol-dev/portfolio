@@ -4,7 +4,7 @@ A scroll-driven editorial portfolio. The left column tells the story in plain, a
 On the right, a 3D avatar hands the visitor a different object for each section: an ID card,
 a tablet, a framed certificate, a laptop, a book and a phone.
 
-**Stack:** Next.js 16 (App Router, static export of every route), React 19, TypeScript (strict),
+**Stack:** Next.js 16 (App Router, every route pre-rendered as static), React 19, TypeScript (strict),
 Tailwind CSS v4, three.js + React Three Fiber 9 + drei 10, motion (DOM only), zustand.
 
 ## Run it
@@ -76,11 +76,23 @@ secrets in them, and rebuild after changing them.
    and `.git`, which Hostinger regenerates or doesn't need. That's what made the folder about 1 GB.
 3. In hPanel: **Websites → Add website → Node.js Apps → Upload your website files** and upload the zip.
 4. Build settings (Hostinger usually detects them for Next.js):
-   - **Node version:** 20 or 22 (Next 16 needs ≥ 20.9)
+   - **Node version:** **22** (required; set it in the Node.js app settings)
    - **Install:** `npm install`  ·  **Build:** `npm run build`  ·  **Start:** `npm start`
    - **Environment variables:** optional. You can set `NEXT_PUBLIC_SITE_URL` here instead of in
      `.env.production`; a value set here wins.
 5. Deploy, then open the site and check that the 3D stage loads and the resume downloads.
+
+**Why the build uses webpack and a WASM compiler:** Hostinger's servers run an older Linux
+(glibc < 2.29). Next.js 16's native compiler (SWC) needs glibc 2.30, so it can't load there.
+The project therefore:
+- ships `@next/swc-wasm-nodejs` (pinned to the exact `next` version), which Next uses automatically
+  when the native compiler can't load;
+- builds with webpack (`next build --webpack` in `npm run build`), because Turbopack can't run on WASM;
+- uses `next.config.mjs` and `postcss.config.mjs` (plain JS, no compile step).
+
+Local `npm run dev` still uses Turbopack. To reproduce Hostinger's compiler locally, run
+`NEXT_TEST_WASM=1 npm run build`. **If you upgrade `next`, upgrade `@next/swc-wasm-nodejs` to the
+exact same version.**
 
 To update the site later, edit the content, run `npm run package` again and re-upload, or connect a
 Git repository in hPanel.

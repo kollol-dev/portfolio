@@ -300,3 +300,12 @@ one leadership role (Leading University Computer Club VP).
 - **Packaging:** `npm run package` → `release/portfolio-upload.zip` (source only). Build-time packages
   (Tailwind, TypeScript, types) are in `dependencies`, so installs that skip devDependencies still
   build. `engines.node >= 20.9`.
+
+## 13. Old-glibc hosting (Hostinger)
+
+Hostinger's build servers have glibc < 2.29. `@next/swc-linux-x64-gnu@16.4.5` needs GLIBC_2.30, so
+the native compiler fails to load, and loading `next.config.ts` (which needs SWC) crashes. Tailwind's
+native parts (`@tailwindcss/oxide`, `lightningcss`) need only GLIBC_2.14 and work there. Fix:
+`@next/swc-wasm-nodejs` (exact version match) for the automatic WASM fallback, `next build --webpack`
+(Turbopack has no WASM support), `next.config.mjs`, and Tailwind via `@tailwindcss/postcss`. Verified
+with `NEXT_TEST_WASM=1 npm run build` (`loadBindings().isWasm === true`). Node 22 is required.
