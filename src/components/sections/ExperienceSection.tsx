@@ -1,0 +1,49 @@
+import { portfolio } from "@/data/portfolio";
+import { Section } from "@/components/ui/Section";
+import { TagList } from "@/components/ui/Tag";
+
+/** 02 — Experience, as a vertical timeline. */
+export function ExperienceSection() {
+  return (
+    <Section
+      id="experience"
+      eyebrow="Experience"
+      title={
+        <>
+          Seven years of <em className="text-accent">backend</em> work.
+        </>
+      }
+    >
+      <ol className="relative space-y-14 border-l border-line pl-8">
+        {portfolio.experience.map((job) => (
+          <li key={`${job.company}-${job.start}`} className="relative">
+            <span
+              aria-hidden
+              className={`absolute top-2 -left-[calc(2rem+4.5px)] size-2 rounded-full border ${
+                job.end === "Present" ? "border-accent bg-accent" : "border-line-strong bg-bg"
+              }`}
+            />
+            <p className="font-mono text-micro tracking-wider text-text-subtle uppercase">
+              <time>{job.start}</time> — <time>{job.end}</time>
+            </p>
+            <h3 className="mt-2 text-h3 text-text">{job.role}</h3>
+            <p className="mt-1 text-caption text-text-muted">
+              {job.company} <span className="text-text-faint">·</span> {job.location}
+            </p>
+            <ul className="mt-5 space-y-2.5">
+              {job.highlights.map((h) => (
+                <li key={h} className="flex gap-3 text-text-muted">
+                  <span aria-hidden className="mt-[0.7em] h-px w-3 shrink-0 bg-line-strong" />
+                  <span className="text-pretty">{h}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-5">
+              <TagList items={job.stack} label={`Technologies used at ${job.company}`} />
+            </div>
+          </li>
+        ))}
+      </ol>
+    </Section>
+  );
+}
