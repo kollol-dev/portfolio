@@ -32,8 +32,7 @@ interface BoneSpec {
   required: boolean;
 }
 
-const side = (s: "Left" | "Right", part: string) =>
-  new RegExp(`(^|[:_.])(${s}|${s[0]}[_.]?)${part}$`, "i");
+const side = (s: "Left" | "Right", part: string) => new RegExp(`(^|[:_.])(${s}|${s[0]}[_.]?)${part}$`, "i");
 
 export const RIG_CONFIG: Record<RigBoneKey, BoneSpec> = {
   hips: { primary: "Hips", fallbacks: [/hips$/i, /pelvis$/i], required: false },
@@ -42,14 +41,30 @@ export const RIG_CONFIG: Record<RigBoneKey, BoneSpec> = {
   neck: { primary: "Neck", fallbacks: [/neck$/i], required: false },
   head: { primary: "Head", fallbacks: [/head$/i], required: false },
 
-  leftShoulder: { primary: "LeftShoulder", fallbacks: [side("Left", "Shoulder"), side("Left", "Clavicle")], required: false },
+  leftShoulder: {
+    primary: "LeftShoulder",
+    fallbacks: [side("Left", "Shoulder"), side("Left", "Clavicle")],
+    required: false,
+  },
   leftUpperArm: { primary: "LeftArm", fallbacks: [side("Left", "Arm"), side("Left", "UpperArm")], required: false },
-  leftForearm: { primary: "LeftForeArm", fallbacks: [side("Left", "ForeArm"), side("Left", "LowerArm")], required: false },
+  leftForearm: {
+    primary: "LeftForeArm",
+    fallbacks: [side("Left", "ForeArm"), side("Left", "LowerArm")],
+    required: false,
+  },
   leftHand: { primary: "LeftHand", fallbacks: [side("Left", "Hand")], required: false },
 
-  rightShoulder: { primary: "RightShoulder", fallbacks: [side("Right", "Shoulder"), side("Right", "Clavicle")], required: true },
+  rightShoulder: {
+    primary: "RightShoulder",
+    fallbacks: [side("Right", "Shoulder"), side("Right", "Clavicle")],
+    required: true,
+  },
   rightUpperArm: { primary: "RightArm", fallbacks: [side("Right", "Arm"), side("Right", "UpperArm")], required: true },
-  rightForearm: { primary: "RightForeArm", fallbacks: [side("Right", "ForeArm"), side("Right", "LowerArm")], required: true },
+  rightForearm: {
+    primary: "RightForeArm",
+    fallbacks: [side("Right", "ForeArm"), side("Right", "LowerArm")],
+    required: true,
+  },
   // This rig has no separate wrist bone; the hand bone doubles as the wrist.
   rightWrist: { primary: "RightHand", fallbacks: [side("Right", "Wrist"), side("Right", "Hand")], required: false },
   rightHand: { primary: "RightHand", fallbacks: [side("Right", "Hand")], required: true },

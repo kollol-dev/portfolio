@@ -1,6 +1,6 @@
 "use client";
 
-import { portfolio } from "@/data/portfolio";
+import { featured, portfolio } from "@/data/portfolio";
 import { materials } from "@/styles/tokens3d";
 import { Label, Mat, Panel, Plate, Rule } from "./kit";
 
@@ -15,14 +15,22 @@ const INK_SOFT = "#5a554c";
 
 /** 03 Certifications — framed certificate. */
 export function Certificate() {
-  const cert = portfolio.certifications[1] ?? portfolio.certifications[0];
+  const cert = featured(portfolio.certifications);
+  if (!cert) return null;
+  const recipient = `${portfolio.profile.firstName[0]}. ${portfolio.profile.lastName}`.toUpperCase();
   return (
     <group position={[0, H / 2, 0]}>
       {/* Black frame with a thin brass inner lip */}
       <Plate size={[W, H, D]} radius={0.004} bevel={0.2} hole={OPEN}>
         <Mat kind="bezel" />
       </Plate>
-      <Plate size={[OPEN.w + 0.006, OPEN.h + 0.006, 0.004]} radius={0.002} bevel={0.2} hole={OPEN} position={[0, 0, -D / 2 + 0.0055]}>
+      <Plate
+        size={[OPEN.w + 0.006, OPEN.h + 0.006, 0.004]}
+        radius={0.002}
+        bevel={0.2}
+        hole={OPEN}
+        position={[0, 0, -D / 2 + 0.0055]}
+      >
         <Mat kind="brass" />
       </Plate>
       {/* Backing board and paper */}
@@ -33,23 +41,46 @@ export function Certificate() {
         <meshStandardMaterial color={materials.paper.color} roughness={materials.paper.roughness} />
       </Panel>
 
-      <Label position={[0, 0.042, T]} size={0.0052} font="monoMedium" color={INK_SOFT} anchorX="center" letterSpacing={0.24} uppercase>
+      <Label
+        position={[0, 0.042, T]}
+        size={0.0052}
+        font="monoMedium"
+        color={INK_SOFT}
+        anchorX="center"
+        letterSpacing={0.24}
+        uppercase
+      >
         Certificate
       </Label>
       <Rule from={[-0.018, 0.034]} to={[0.018, 0.034]} z={T} color="#b39467" width={0.0005} />
-      <Label position={[0, 0.016, T]} size={0.0112} font="serif" color={INK} anchorX="center" maxWidth={0.15} lineHeight={1.1}>
+      <Label
+        position={[0, 0.016, T]}
+        size={0.0112}
+        font="serif"
+        color={INK}
+        anchorX="center"
+        maxWidth={0.15}
+        lineHeight={1.1}
+      >
         {cert.name}
       </Label>
       <Label position={[0, -0.009, T]} size={0.0062} font="sansMedium" color={INK} anchorX="center">
         {cert.issuer}
       </Label>
-      <Label position={[0, -0.0195, T]} size={0.0043} font="mono" color={INK_SOFT} anchorX="center" letterSpacing={0.06}>
+      <Label
+        position={[0, -0.0195, T]}
+        size={0.0043}
+        font="mono"
+        color={INK_SOFT}
+        anchorX="center"
+        letterSpacing={0.06}
+      >
         {cert.period.toUpperCase()}
       </Label>
 
       <Rule from={[-0.07, -0.042]} to={[-0.03, -0.042]} z={T} color={INK_SOFT} width={0.0004} />
       <Label position={[-0.07, -0.0475, T]} size={0.0032} font="mono" color={INK_SOFT} letterSpacing={0.1}>
-        AWARDED TO K. CHAKRABORTY
+        {`AWARDED TO ${recipient}`}
       </Label>
 
       {/* Foil seal */}

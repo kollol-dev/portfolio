@@ -7,6 +7,11 @@ import { resolveRig, type RigResolution } from "./rigConfig";
 import { inspectSkeleton, isRigDebug, logSkeletonReport, type SkeletonReport } from "./skeletonDiagnostics";
 
 export const AVATAR_URL = "/models/avatar.glb";
+// The model is meshopt-compressed with WebP textures (gltf-transform). The
+// meshopt decoder ships with three-stdlib; Draco stays off so drei never
+// fetches its decoder from a CDN.
+const USE_DRACO = false;
+const USE_MESHOPT = true;
 
 declare global {
   interface Window {
@@ -25,12 +30,10 @@ interface AvatarProps {
  * Holds no animation logic — that lives in the AvatarController (Phase 4).
  */
 export function Avatar({ onRig }: AvatarProps) {
-  const { scene, animations } = useGLTF(AVATAR_URL);
+  const { scene, animations } = useGLTF(AVATAR_URL, USE_DRACO, USE_MESHOPT);
   // This component only renders in the browser (Scene is loaded with ssr: false).
   const [debug] = useState(isRigDebug);
-  const [showSkeleton] = useState(
-    () => new URLSearchParams(window.location.search).get("debug") === "rig",
-  );
+  const [showSkeleton] = useState(() => new URLSearchParams(window.location.search).get("debug") === "rig");
 
   useLayoutEffect(() => {
     scene.traverse((o) => {
@@ -62,4 +65,4 @@ export function Avatar({ onRig }: AvatarProps) {
   );
 }
 
-useGLTF.preload(AVATAR_URL);
+useGLTF.preload(AVATAR_URL, USE_DRACO, USE_MESHOPT);

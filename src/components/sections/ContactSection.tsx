@@ -1,6 +1,7 @@
 import { ArrowUpRight, Download, Mail } from "lucide-react";
-import { portfolio } from "@/data/portfolio";
+import { displayUrl, portfolio } from "@/data/portfolio";
 import { Section } from "@/components/ui/Section";
+import { Reveal } from "@/components/ui/Reveal";
 import { LinkButton } from "@/components/ui/LinkButton";
 import { SocialIcon } from "@/components/ui/BrandIcons";
 
@@ -8,60 +9,48 @@ import { SocialIcon } from "@/components/ui/BrandIcons";
 export function ContactSection() {
   const { profile } = portfolio;
   const profiles = profile.socials.filter((s) => s.kind !== "email");
+  const { intro } = portfolio.sections.contact;
 
   return (
-    <Section
-      id="contact"
-      eyebrow="Contact"
-      title={
-        <>
-          Let&rsquo;s build something <em className="text-accent">durable</em>.
-        </>
-      }
-    >
-      <p className="text-lead text-pretty text-text-muted">
-        Email is the fastest way to reach me. I&rsquo;m also on GitHub and LinkedIn.
-      </p>
+    <Section id="contact">
+      <Reveal>
+        {intro ? <p className="text-lead text-pretty text-text-muted">{intro}</p> : null}
 
-      <a
-        href={`mailto:${profile.email}`}
-        className="group mt-10 flex items-center justify-between gap-4 border-y border-line py-6 text-text transition-colors duration-(--dur-base) hover:text-accent-strong"
-      >
-        <span className="flex min-w-0 items-center gap-4">
-          <Mail className="size-5 shrink-0 text-accent" aria-hidden strokeWidth={1.5} />
-          <span className="truncate font-display text-[clamp(1.5rem,1rem+2vw,2.25rem)]">
-            {profile.email}
+        <a
+          href={`mailto:${profile.email}`}
+          className="group mt-10 flex items-center justify-between gap-4 border-y border-line py-6 text-text transition-colors duration-(--dur-base) hover:text-accent-strong"
+        >
+          <span className="flex min-w-0 items-center gap-4">
+            <Mail className="size-5 shrink-0 text-accent" aria-hidden strokeWidth={1.5} />
+            <span className="truncate font-display text-[clamp(1.5rem,1rem+2vw,2.25rem)]">{profile.email}</span>
           </span>
-        </span>
-        <ArrowUpRight
-          className="size-5 shrink-0 transition-transform duration-(--dur-base) ease-out-expo group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-          aria-hidden
-          strokeWidth={1.5}
-        />
-      </a>
+          <ArrowUpRight
+            className="size-5 shrink-0 transition-transform duration-(--dur-base) ease-out-expo group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+            aria-hidden
+            strokeWidth={1.5}
+          />
+        </a>
 
-      <ul className="divide-y divide-line border-b border-line">
-        {profiles.map((s) => (
-          <li key={s.kind}>
-            <a
-              href={s.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex min-h-14 items-center justify-between gap-4 py-4 text-text-muted transition-colors duration-(--dur-base) hover:text-text"
-            >
-              <span className="flex items-center gap-4">
-                <SocialIcon kind={s.kind} />
-                {s.label}
-                <span className="sr-only"> (opens in a new tab)</span>
-              </span>
-              <span className="truncate font-mono text-micro text-text-subtle">
-                {s.href.replace(/^https?:\/\/(www\.)?/, "")}
-              </span>
-            </a>
-          </li>
-        ))}
-      </ul>
-
+        <ul className="divide-y divide-line border-b border-line">
+          {profiles.map((s) => (
+            <li key={s.kind}>
+              <a
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex min-h-14 items-center justify-between gap-4 py-4 text-text-muted transition-colors duration-(--dur-base) hover:text-text"
+              >
+                <span className="flex items-center gap-4">
+                  <SocialIcon kind={s.kind} />
+                  {s.label}
+                  <span className="sr-only"> (opens in a new tab)</span>
+                </span>
+                <span className="truncate font-mono text-micro text-text-subtle">{displayUrl(s.href)}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </Reveal>
       <div className="mt-10">
         <LinkButton
           href={profile.resumePath}

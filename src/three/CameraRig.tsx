@@ -2,7 +2,7 @@
 
 import { useEffect, useLayoutEffect, useMemo } from "react";
 import { useThree } from "@react-three/fiber";
-import { Vector3 } from "three";
+import { Vector3, type PerspectiveCamera } from "three";
 import { camera as cam } from "@/styles/tokens3d";
 import { scrollProgress } from "@/lib/scrollStore";
 import type { AvatarController } from "./controller/AvatarController";
@@ -11,6 +11,8 @@ const WIDE_POS = new Vector3(...cam.position);
 const WIDE_TGT = new Vector3(...cam.target);
 const NEAR_POS = new Vector3(...cam.present.position);
 const NEAR_TGT = new Vector3(...cam.present.target);
+const BAND_POS = new Vector3(...cam.presentBand.position);
+const BAND_TGT = new Vector3(...cam.presentBand.target);
 
 declare global {
   interface Window {
@@ -47,8 +49,9 @@ export function CameraRig({ controller }: { controller: AvatarController | null 
       v.w = controller.isReducedMotion ? goal : v.w + (goal - v.w) * (1 - Math.exp(-cam.damping * dt));
       // Smootherstep keeps the start and end of the move gentle.
       const t = v.w * v.w * v.w * (v.w * (v.w * 6 - 15) + 10);
-      v.pos.lerpVectors(WIDE_POS, NEAR_POS, t);
-      v.tgt.lerpVectors(WIDE_TGT, NEAR_TGT, t);
+      const band = (camera as PerspectiveCamera).aspect > 1.2;
+      v.pos.lerpVectors(WIDE_POS, band ? BAND_POS : NEAR_POS, t);
+      v.tgt.lerpVectors(WIDE_TGT, band ? BAND_TGT : NEAR_TGT, t);
 
       // Slow drift tied to reading progress within the section: the shot
       // eases a few centimetres sideways as you scroll, so the stage

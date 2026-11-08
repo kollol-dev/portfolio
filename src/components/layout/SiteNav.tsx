@@ -5,6 +5,8 @@ import { Download, Menu, X } from "lucide-react";
 import { SECTIONS } from "@/config/sections";
 import { portfolio } from "@/data/portfolio";
 import { useScrollStore } from "@/lib/scrollStore";
+import { StageToggle } from "./StageToggle";
+import { ScrollProgress } from "./ScrollProgress";
 
 const links = SECTIONS.filter((s) => s.id !== "intro");
 
@@ -15,12 +17,14 @@ const links = SECTIONS.filter((s) => s.id !== "intro");
 export function SiteNav() {
   const [open, setOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const { profile } = portfolio;
   const active = useScrollStore((st) => st.active);
 
-  // Close on Escape and return focus to the toggle.
+  // Move focus into the menu on open; close on Escape and return focus to the toggle.
   useEffect(() => {
     if (!open) return;
+    menuRef.current?.querySelector("a")?.focus();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setOpen(false);
@@ -33,21 +37,16 @@ export function SiteNav() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-line bg-bg/80 backdrop-blur-md supports-[backdrop-filter]:bg-bg/70">
-      <nav
-        aria-label="Primary"
-        className="mx-auto flex h-(--nav-h) items-center justify-between gap-6 px-(--gutter)"
-      >
-        <a
-          href="#intro"
-          className="flex min-h-11 items-center gap-3 text-caption font-medium tracking-tight text-text"
-        >
+      <nav aria-label="Primary" className="mx-auto flex h-(--nav-h) items-center justify-between gap-6 px-(--gutter)">
+        <a href="#intro" className="flex min-h-11 items-center gap-3 text-caption font-medium tracking-tight text-text">
           <span
             aria-hidden
             className="grid size-7 place-items-center rounded-xs border border-line-strong font-mono text-micro text-accent"
           >
             KC
           </span>
-          <span className="hidden sm:inline">{profile.name}</span>
+          {/* Visually hidden on phones but still the link's accessible name */}
+          <span className="max-sm:sr-only">{profile.name}</span>
         </a>
 
         <ul className="hidden items-center gap-1 lg:flex">
@@ -64,7 +63,7 @@ export function SiteNav() {
                 >
                   <span
                     className={`font-mono text-micro transition-colors duration-(--dur-base) ${
-                      current ? "text-accent" : "text-text-faint"
+                      current ? "text-accent" : "text-text-subtle"
                     }`}
                   >
                     {s.index}
@@ -83,6 +82,7 @@ export function SiteNav() {
         </ul>
 
         <div className="flex items-center gap-2">
+          <StageToggle />
           <a
             href={profile.resumePath}
             download="Kollol-Chakraborty-Resume.pdf"
@@ -105,9 +105,11 @@ export function SiteNav() {
           </button>
         </div>
       </nav>
+      <ScrollProgress />
 
       <div
         id="mobile-menu"
+        ref={menuRef}
         hidden={!open}
         className="border-t border-line bg-bg px-(--gutter) pb-6 lg:hidden"
       >

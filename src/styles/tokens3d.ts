@@ -79,6 +79,11 @@ export const camera = {
     position: [-0.34, 1.46, 2.45] as const,
     target: [-0.2, 1.36, 0.1] as const,
   },
+  /** Closer medium shot for the short, wide mobile band (aspect > 1.2). */
+  presentBand: {
+    position: [-0.3, 1.5, 2.05] as const,
+    target: [-0.2, 1.4, 0.1] as const,
+  },
   /** Push-in speed (exponential, per second). */
   damping: 2.2,
   /** Camera travel (m) across one section's scroll, centred on mid-section. */

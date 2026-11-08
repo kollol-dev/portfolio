@@ -1,27 +1,29 @@
 /**
- * Single source of content for the site.
+ * Content loader.
  *
- * Everything here comes from Kollol-Backend-Developer-Resume.pdf.
- * Anything the resume does not contain is marked with PLACEHOLDER and
- * rendered with a visible dashed style, so gaps are never mistaken for facts.
- * Replace a placeholder by swapping the string (or adding the URL).
+ * All site content lives in `content/portfolio.json` — edit that file, not
+ * this one. This module reads it, checks every field, fills in defaults and
+ * exports a typed `portfolio` object the rest of the site uses.
+ *
+ * A mistake in the JSON (missing field, wrong type, unknown value) stops the
+ * build with a message naming the exact field, instead of shipping a broken page.
+ *
+ * Strings starting with "[PLACEHOLDER]" render as a dashed TBD marker.
  */
+import raw from "../../content/portfolio.json";
 
 export const PLACEHOLDER_PREFIX = "[PLACEHOLDER]";
-export const placeholder = (hint: string) => `${PLACEHOLDER_PREFIX} ${hint}`;
 export const isPlaceholder = (value: string | undefined | null): boolean =>
   !value || value.startsWith(PLACEHOLDER_PREFIX);
 
 /* ------------------------------------------------------------------ types */
 
-export interface Link {
-  label: string;
-  /** Omit when unknown — the UI renders a disabled placeholder. */
-  href?: string;
-}
+export type SocialKind = "github" | "linkedin" | "email";
 
-export interface SocialLink extends Required<Link> {
-  kind: "github" | "linkedin" | "email";
+export interface SocialLink {
+  kind: SocialKind;
+  label: string;
+  href: string;
 }
 
 export interface Profile {
@@ -35,6 +37,9 @@ export interface Profile {
   summary: string;
   email: string;
   resumePath: string;
+  /** Portrait for the ID card, served from /public. */
+  photo: string;
+  /** Profile links plus an email link added automatically. */
   socials: SocialLink[];
 }
 
@@ -54,6 +59,8 @@ export interface Certification {
   period: string;
   credentialId: string;
   verifyUrl?: string;
+  /** Shown on the framed certificate in 3D. */
+  featured: boolean;
 }
 
 export interface Project {
@@ -67,7 +74,11 @@ export interface Project {
   github?: string;
   live?: string;
   /** Private / proprietary work — explains why links are absent. */
-  confidential?: boolean;
+  confidential: boolean;
+  /** Shown on the 3D laptop. */
+  featured: boolean;
+  /** What the 3D laptop screen shows; defaults derive from `stack`. */
+  screen: { tagline: string; pipeline: string[] };
 }
 
 export interface Education {
@@ -76,14 +87,22 @@ export interface Education {
   location: string;
   period: string;
   achievements: string[];
+  /** Lettering on the 3D book cover. */
+  cover: { title: string; subtitle: string };
 }
 
+export type ActivityKind = "leadership" | "volunteering" | "award";
+
 export interface Activity {
-  kind: "leadership" | "volunteering" | "award";
+  kind: ActivityKind;
   title: string;
   organisation: string;
   period: string;
   description: string;
+  /** Short text inside the badge on the 3D phone. */
+  badge: string;
+  /** Pill text on the 3D phone. */
+  tags: string[];
 }
 
 export interface SkillGroup {
@@ -91,8 +110,35 @@ export interface SkillGroup {
   items: string[];
 }
 
+export interface SectionCopy {
+  navLabel: string;
+  /** Small label above the heading. */
+  eyebrow: string;
+  /** Heading; wrap words in *asterisks* for the brass italic accent. */
+  title: string;
+  /** Caption on the 3D stage while this section's prop is shown. */
+  stageCaption: string | null;
+  /** Experience only: heading above the skills list. */
+  toolkitTitle?: string;
+  /** Contact only: sentence under the heading. */
+  intro?: string;
+}
+
+export const SECTION_KEYS = [
+  "intro",
+  "experience",
+  "certifications",
+  "projects",
+  "education",
+  "activities",
+  "contact",
+] as const;
+export type SectionKey = (typeof SECTION_KEYS)[number];
+
 export interface Portfolio {
   profile: Profile;
+  seo: { keywords: string[] };
+  sections: Record<SectionKey, SectionCopy>;
   skills: SkillGroup[];
   experience: Role[];
   certifications: Certification[];
@@ -102,196 +148,228 @@ export interface Portfolio {
   closingStatement: string;
 }
 
-/* ------------------------------------------------------------------ data */
+/* ------------------------------------------------------------- validation */
 
-const email = "kollol.work@gmail.com";
+type Obj = Record<string, unknown>;
 
-export const portfolio: Portfolio = {
-  profile: {
-    name: "Kollol Chakraborty",
-    firstName: "Kollol",
-    lastName: "Chakraborty",
-    title: "Senior Software Engineer",
-    location: "Sylhet, Bangladesh",
-    availability: placeholder("Availability, e.g. “Open to senior backend roles”"),
-    headline: "Backend systems that carry real-world data.",
-    summary:
-      "Senior software engineer building APIs, data pipelines and event-driven services since 2019, with Node.js, TypeScript, Python and Go. Currently working remotely for a UK team on a platform for real-time and historical disaster data.",
+class ContentError extends Error {
+  constructor(path: string, problem: string) {
+    super(`content/portfolio.json → ${path} ${problem}`);
+    this.name = "ContentError";
+  }
+}
+
+function obj(v: unknown, path: string): Obj {
+  if (typeof v !== "object" || v === null || Array.isArray(v)) throw new ContentError(path, "must be an object { … }");
+  return v as Obj;
+}
+function str(o: Obj, key: string, path: string): string {
+  const v = o[key];
+  if (typeof v !== "string" || v.trim() === "") throw new ContentError(`${path}.${key}`, "must be non-empty text");
+  return v;
+}
+/** Optional text: missing, null or "" all mean "not set". */
+function optStr(o: Obj, key: string, path: string): string | undefined {
+  const v = o[key];
+  if (v === undefined || v === null || v === "") return undefined;
+  if (typeof v !== "string") throw new ContentError(`${path}.${key}`, "must be text");
+  return v;
+}
+function bool(o: Obj, key: string, path: string): boolean {
+  const v = o[key];
+  if (v === undefined) return false;
+  if (typeof v !== "boolean") throw new ContentError(`${path}.${key}`, "must be true or false");
+  return v;
+}
+function list<T>(v: unknown, path: string, item: (x: unknown, p: string) => T): T[] {
+  if (!Array.isArray(v)) throw new ContentError(path, "must be a list [ … ]");
+  return v.map((x, i) => item(x, `${path}[${i}]`));
+}
+function strList(o: Obj, key: string, path: string, optional = false): string[] {
+  if (optional && o[key] === undefined) return [];
+  return list(o[key], `${path}.${key}`, (x, p) => {
+    if (typeof x !== "string") throw new ContentError(p, "must be text");
+    return x;
+  });
+}
+function oneOf<T extends string>(o: Obj, key: string, path: string, allowed: readonly T[]): T {
+  const v = str(o, key, path);
+  if (!allowed.includes(v as T)) throw new ContentError(`${path}.${key}`, `must be one of: ${allowed.join(", ")}`);
+  return v as T;
+}
+
+const initials = (text: string) =>
+  text
+    .split(/\s+/)
+    .filter((w) => /^[A-Z]/.test(w))
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join("");
+
+function parse(data: unknown): Portfolio {
+  const root = obj(data, "(root)");
+
+  const p = obj(root.profile, "profile");
+  const email = str(p, "email", "profile");
+  const socials = list(p.socials, "profile.socials", (x, path) => {
+    const s = obj(x, path);
+    return {
+      kind: oneOf(s, "kind", path, ["github", "linkedin", "email"] as const),
+      label: str(s, "label", path),
+      href: str(s, "href", path),
+    };
+  });
+  if (!socials.some((s) => s.kind === "email"))
+    socials.push({ kind: "email", label: "Email", href: `mailto:${email}` });
+
+  const profile: Profile = {
+    name: str(p, "name", "profile"),
+    firstName: str(p, "firstName", "profile"),
+    lastName: str(p, "lastName", "profile"),
+    title: str(p, "title", "profile"),
+    location: str(p, "location", "profile"),
+    availability: str(p, "availability", "profile"),
+    headline: str(p, "headline", "profile"),
+    summary: str(p, "summary", "profile"),
     email,
-    resumePath: "/resume.pdf",
-    socials: [
-      { kind: "github", label: "GitHub", href: "https://www.github.com/kollol-dev" },
-      { kind: "linkedin", label: "LinkedIn", href: "https://www.linkedin.com/in/kollol-dev" },
-      { kind: "email", label: "Email", href: `mailto:${email}` },
-    ],
-  },
+    resumePath: str(p, "resumePath", "profile"),
+    photo: str(p, "photo", "profile"),
+    socials,
+  };
 
-  skills: [
-    {
-      label: "Technologies",
-      items: ["Node.js", "TypeScript", "Python", "Go", "MongoDB", "MySQL", "PostgreSQL", "GraphQL", "Elasticsearch", "Nuxt", "PHP"],
-    },
-    { label: "DevOps", items: ["AWS", "Docker", "Linux VPS"] },
-    { label: "CI/CD", items: ["GitHub Actions"] },
-    { label: "Other", items: ["RabbitMQ", "Socket.io", "DSA"] },
-  ],
+  const seo = obj(root.seo ?? {}, "seo");
+  const sectionsRaw = obj(root.sections, "sections");
+  const sections = Object.fromEntries(
+    SECTION_KEYS.map((key) => {
+      const path = `sections.${key}`;
+      const s = obj(sectionsRaw[key], path);
+      const copy: SectionCopy = {
+        navLabel: str(s, "navLabel", path),
+        eyebrow: key === "intro" ? profile.title : str(s, "eyebrow", path),
+        title: key === "intro" ? profile.name : str(s, "title", path),
+        stageCaption: optStr(s, "stageCaption", path) ?? null,
+        toolkitTitle: optStr(s, "toolkitTitle", path),
+        intro: optStr(s, "intro", path),
+      };
+      return [key, copy];
+    }),
+  ) as Record<SectionKey, SectionCopy>;
 
-  experience: [
-    {
-      company: "Technovative Solutions Limited",
-      role: "Senior Software Engineer",
-      location: "United Kingdom (Remote)",
-      start: "Feb 2023",
-      end: "Present",
-      highlights: [
-        "Built a centralized database for real-time and historical disaster data, using Python and GDAL in ETL pipelines to transform GIS files.",
-        "Designed an event-driven architecture that supports both legacy and modern services, improving scalability.",
-        "Implemented a large-file upload service (up to 500 MB) that streams to cloud storage and decompresses asynchronously via message queues.",
-        "Integrated an ontology-based virtual knowledge graph with the centralized database for real-time data access.",
-        "Created a SPARQL query builder so end users can build queries dynamically.",
-      ],
-      stack: ["Python", "GDAL", "ETL", "Message queues", "Cloud storage", "SPARQL", "Knowledge graphs"],
-    },
-    {
-      company: "Dorik, Inc.",
-      role: "Software Engineer",
-      location: "Sylhet, Bangladesh",
-      start: "Feb 2022",
-      end: "Mar 2023",
-      highlights: [
-        "Developed REST and GraphQL APIs with Node.js and MongoDB, reducing bugs by 80% through end-to-end test coverage.",
-        "Implemented Elasticsearch, reducing search query time by 30–35%.",
-        "Built CMS features including custom RSS feeds, sitemaps, membership management and client billing.",
-        "Created serverless AWS Lambda functions to handle webhooks, improving platform automation.",
-      ],
-      stack: ["Node.js", "MongoDB", "GraphQL", "REST", "Elasticsearch", "AWS Lambda"],
-    },
-    {
-      company: "Syntaxive",
-      role: "Software Engineer",
-      location: "Sylhet, Bangladesh",
-      start: "Jan 2021",
-      end: "Jan 2022",
-      highlights: [
-        "Designed and developed web applications with Nuxt.js, Adonis.js and MySQL.",
-        "Reduced query time by 20% through refactoring and optimization.",
-        "Developed real-time chat applications using Socket.io.",
-        "Configured remote servers for deployment on a LEMP stack.",
-      ],
-      stack: ["Nuxt.js", "Adonis.js", "MySQL", "Socket.io", "LEMP"],
-    },
-    {
-      company: "Appifylab",
-      role: "Software Engineer",
-      location: "Sylhet, Bangladesh",
-      start: "Mar 2019",
-      end: "Dec 2020",
-      highlights: [
-        "Built interactive websites with Nuxt.js on the frontend, Adonis.js on the backend and MySQL for data.",
-        "Implemented REST APIs for mobile apps and websites, and monitored their performance.",
-      ],
-      stack: ["Nuxt.js", "Adonis.js", "MySQL", "REST"],
-    },
-  ],
+  const skills = list(root.skills, "skills", (x, path) => {
+    const s = obj(x, path);
+    return { label: str(s, "label", path), items: strList(s, "items", path) };
+  });
 
-  certifications: [
-    {
-      name: "LICT Top-Up IT Training on Android Development",
-      issuer: "NESSCOM IT-ITES Sector Skill Council",
-      period: "Oct 2017 – Feb 2018",
-      credentialId: placeholder("Credential ID"),
-    },
-    {
-      name: "Young Bangla Internship Program",
-      issuer: "Microsoft",
-      period: "Jan 2018 – Mar 2018",
-      credentialId: placeholder("Credential ID"),
-    },
-  ],
+  const experience = list(root.experience, "experience", (x, path) => {
+    const r = obj(x, path);
+    return {
+      company: str(r, "company", path),
+      role: str(r, "role", path),
+      location: str(r, "location", path),
+      start: str(r, "start", path),
+      end: str(r, "end", path),
+      highlights: strList(r, "highlights", path),
+      stack: strList(r, "stack", path, true),
+    };
+  });
 
-  projects: [
-    {
-      name: "Disaster Data Platform",
-      context: "Technovative Solutions · 2023 – present",
-      role: "Senior Software Engineer",
-      summary:
-        "A centralized store for real-time and historical disaster data, fed by GIS ETL pipelines and exposed through a virtual knowledge graph.",
-      architecture: [
-        "Event-driven design that lets legacy and modern services run side by side.",
-        "Python + GDAL ETL jobs transform GIS files before storage.",
-        "Uploads stream straight to cloud storage; decompression runs asynchronously off a message queue.",
-        "Ontology-based virtual knowledge graph over the database, queried through a SPARQL builder.",
-      ],
-      challenges: [
-        "Accepting files up to 500 MB without tying up the API.",
-        "Letting non-specialist users build SPARQL queries.",
-      ],
-      stack: ["Python", "GDAL", "Message queues", "SPARQL", "Knowledge graphs"],
-      confidential: true,
-    },
-    {
-      name: "Real-time Bus Tracker",
-      context: "Leading University · Academic project",
-      role: "Developer",
-      summary:
-        "A real-time bus tracking system that shows live vehicle positions on a map.",
-      architecture: [
-        "Node.js server pushes location updates to clients over Socket.io.",
-        "Positions are rendered with the Google Maps API.",
-      ],
-      challenges: [placeholder("Main technical challenge on this project")],
-      stack: ["Node.js", "Socket.io", "Google Maps API"],
-      github: undefined, // PLACEHOLDER: repository URL
-    },
-    {
-      name: placeholder("Project name"),
-      context: placeholder("Company or personal · year"),
-      role: placeholder("Your role"),
-      summary: placeholder("One or two sentences on what it does and for whom."),
-      architecture: [placeholder("Key architecture decision")],
-      challenges: [placeholder("Hard problem you solved")],
-      stack: [],
-    },
-  ],
+  const certifications = list(root.certifications, "certifications", (x, path) => {
+    const c = obj(x, path);
+    return {
+      name: str(c, "name", path),
+      issuer: str(c, "issuer", path),
+      period: str(c, "period", path),
+      credentialId: optStr(c, "credentialId", path) ?? `${PLACEHOLDER_PREFIX} Credential ID`,
+      verifyUrl: optStr(c, "verifyUrl", path),
+      featured: bool(c, "featured", path),
+    };
+  });
 
-  education: [
-    {
-      institution: "Leading University",
-      degree: "B.Sc (Hons.) in Computer Science & Engineering",
-      location: "Sylhet, Bangladesh",
-      period: "Jan 2015 – Jan 2019",
-      achievements: [
-        "CGPA 3.35 out of 4.",
-        "Developed a real-time bus tracking system using Node.js, Socket.io and the Google Maps API.",
-      ],
-    },
-  ],
+  const projects = list(root.projects, "projects", (x, path) => {
+    const pr = obj(x, path);
+    const stack = strList(pr, "stack", path, true);
+    const screenPath = `${path}.screen`;
+    const screen = pr.screen === undefined ? {} : obj(pr.screen, screenPath);
+    const pipeline = strList(screen, "pipeline", screenPath, true).slice(0, 4);
+    return {
+      name: str(pr, "name", path),
+      context: str(pr, "context", path),
+      role: str(pr, "role", path),
+      summary: str(pr, "summary", path),
+      architecture: strList(pr, "architecture", path),
+      challenges: strList(pr, "challenges", path),
+      stack,
+      github: optStr(pr, "github", path),
+      live: optStr(pr, "live", path),
+      confidential: bool(pr, "confidential", path),
+      featured: bool(pr, "featured", path),
+      screen: {
+        tagline: optStr(screen, "tagline", screenPath) ?? stack.slice(0, 3).join(" · "),
+        pipeline: pipeline.length ? pipeline : stack.slice(0, 4),
+      },
+    };
+  });
 
-  activities: [
-    {
-      kind: "leadership",
-      title: "Vice President & ACM Workshop Coordinator",
-      organisation: "Leading University Computer Club",
-      period: "May 2018 – Oct 2019",
-      description:
-        "Organised programming activities including workshops, tech lectures, hackathons and coding challenges.",
-    },
-    {
-      kind: "award",
-      title: placeholder("Award or recognition"),
-      organisation: placeholder("Issuer"),
-      period: placeholder("Year"),
-      description: placeholder("What it was for."),
-    },
-    {
-      kind: "volunteering",
-      title: placeholder("Volunteering or community role"),
-      organisation: placeholder("Organisation"),
-      period: placeholder("Period"),
-      description: placeholder("What you did."),
-    },
-  ],
+  const education = list(root.education, "education", (x, path) => {
+    const e = obj(x, path);
+    const degree = str(e, "degree", path);
+    const coverPath = `${path}.cover`;
+    const cover = e.cover === undefined ? {} : obj(e.cover, coverPath);
+    const [before, after] = degree.split(/\s+in\s+/);
+    return {
+      institution: str(e, "institution", path),
+      degree,
+      location: str(e, "location", path),
+      period: str(e, "period", path),
+      achievements: strList(e, "achievements", path, true),
+      cover: {
+        title: optStr(cover, "title", coverPath) ?? before,
+        subtitle: optStr(cover, "subtitle", coverPath) ?? after ?? "",
+      },
+    };
+  });
 
-  closingStatement:
-    "I like the unglamorous parts of software: the pipelines, queues and schemas that keep working long after launch.",
-};
+  const activities = list(root.activities, "activities", (x, path) => {
+    const a = obj(x, path);
+    const title = str(a, "title", path);
+    return {
+      kind: oneOf(a, "kind", path, ["leadership", "volunteering", "award"] as const),
+      title,
+      organisation: str(a, "organisation", path),
+      period: str(a, "period", path),
+      description: str(a, "description", path),
+      badge: optStr(a, "badge", path) ?? (initials(title) || "★"),
+      tags: strList(a, "tags", path, true),
+    };
+  });
+
+  if (experience.length === 0) throw new ContentError("experience", "needs at least one role");
+  if (education.length === 0) throw new ContentError("education", "needs at least one entry");
+
+  return {
+    profile,
+    seo: { keywords: strList(seo, "keywords", "seo", true) },
+    sections,
+    skills,
+    experience,
+    certifications,
+    projects,
+    education,
+    activities,
+    closingStatement: str(root, "closingStatement", "(root)"),
+  };
+}
+
+export const portfolio: Portfolio = parse(raw);
+
+/* ------------------------------------------------------------ selectors */
+
+/** Item marked `"featured": true`, else the first one. */
+export const featured = <T extends { featured: boolean }>(items: T[]): T | undefined =>
+  items.find((i) => i.featured) ?? items[0];
+
+/** Year the career started (earliest role), e.g. "2019". */
+export const careerStartYear = (): string | undefined => portfolio.experience.at(-1)?.start.match(/\d{4}/)?.[0];
+
+/** "github.com/handle" style display text for a profile URL. */
+export const displayUrl = (href: string) => href.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");

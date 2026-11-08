@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="10" fill="#0a0a0c"/>
+  <rect x="6.5" y="6.5" width="51" height="51" rx="6" fill="none" stroke="#c8a97e" stroke-opacity="0.55"/>
+  <text x="32" y="41" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24" font-weight="500" fill="#c8a97e" letter-spacing="1">KC</text>
+</svg>

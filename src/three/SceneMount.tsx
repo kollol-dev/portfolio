@@ -1,7 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
+import { useStageStore } from "@/lib/stageStore";
 import { SceneErrorBoundary } from "./SceneErrorBoundary";
 import { WebGLFallback } from "./WebGLFallback";
 
@@ -22,7 +23,7 @@ function hasWebGL(): boolean {
   return webglSupport;
 }
 
-type Mode = "pending" | "off" | "webgl" | "unsupported";
+type Mode = "pending" | "desktop" | "mobile" | "unsupported";
 
 function subscribe(cb: () => void) {
   const mq = window.matchMedia(DESKTOP_QUERY);
@@ -31,17 +32,41 @@ function subscribe(cb: () => void) {
 }
 
 function getMode(): Mode {
-  // Mobile layout gets the 3D treatment in Phase 7; until then, skip the 4 MB model.
-  if (!window.matchMedia(DESKTOP_QUERY).matches) return "off";
-  return hasWebGL() ? "webgl" : "unsupported";
+  if (!hasWebGL()) return "unsupported";
+  return window.matchMedia(DESKTOP_QUERY).matches ? "desktop" : "mobile";
 }
 
 /** Decides whether to render the 3D stage, a fallback, or nothing. */
 export function SceneMount() {
   const mode = useSyncExternalStore<Mode>(subscribe, getMode, () => "pending");
   const [contextLost, setContextLost] = useState(false);
+  const mobileHidden = useStageStore((s) => s.mobileHidden);
 
-  if (mode === "pending" || mode === "off") return null;
+  // Start the 3D work only once the page is loaded and the browser is idle,
+  // so parsing three.js and the model never competes with the text becoming
+  // interactive. The timeout caps the wait on busy pages.
+  const [idle, setIdle] = useState(false);
+  useEffect(() => {
+    let idleId: number | undefined;
+    let timerId: ReturnType<typeof setTimeout> | undefined;
+    const start = () => {
+      if (typeof window.requestIdleCallback === "function") {
+        idleId = window.requestIdleCallback(() => setIdle(true), { timeout: 2000 });
+      } else {
+        timerId = setTimeout(() => setIdle(true), 300);
+      }
+    };
+    if (document.readyState === "complete") start();
+    else window.addEventListener("load", start, { once: true });
+    return () => {
+      window.removeEventListener("load", start);
+      if (idleId !== undefined) window.cancelIdleCallback(idleId);
+      if (timerId !== undefined) clearTimeout(timerId);
+    };
+  }, []);
+
+  // A hidden mobile band unmounts the canvas entirely: no GPU work, no download.
+  if (mode === "pending" || !idle || (mode === "mobile" && mobileHidden)) return null;
   if (mode === "unsupported") return <WebGLFallback reason="unsupported" />;
   if (contextLost) return <WebGLFallback reason="error" />;
 

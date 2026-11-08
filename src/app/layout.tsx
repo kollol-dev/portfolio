@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import "./globals.css";
+import { SITE_URL } from "@/config/site";
+import { portfolio } from "@/data/portfolio";
+import { MotionProvider } from "@/components/ui/MotionProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,11 +22,38 @@ const instrumentSerif = Instrument_Serif({
   style: ["normal", "italic"],
 });
 
-// Full SEO / OG metadata is completed in Phase 7.
+const { profile } = portfolio;
+const description = `${profile.name} — ${profile.title}. ${profile.summary}`;
+
 export const metadata: Metadata = {
-  title: "Kollol Chakraborty — Senior Software Engineer",
-  description:
-    "Portfolio of Kollol Chakraborty, a senior backend-focused software engineer working with Node.js, TypeScript, Python and Go.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: `${profile.name} — ${profile.title}`,
+    template: `%s — ${profile.name}`,
+  },
+  description,
+  applicationName: `${profile.name} Portfolio`,
+  authors: [{ name: profile.name, url: SITE_URL }],
+  creator: profile.name,
+  keywords: portfolio.seo.keywords,
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "profile",
+    url: "/",
+    siteName: profile.name,
+    title: `${profile.name} — ${profile.title}`,
+    description,
+    locale: "en_US",
+    firstName: profile.firstName,
+    lastName: profile.lastName,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${profile.name} — ${profile.title}`,
+    description,
+  },
+  robots: { index: true, follow: true },
+  formatDetection: { telephone: false },
 };
 
 export const viewport: Viewport = {
@@ -33,11 +63,10 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} antialiased`}
-    >
-      <body className="min-h-dvh bg-bg text-text">{children}</body>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} antialiased`}>
+      <body className="min-h-dvh bg-bg text-text">
+        <MotionProvider>{children}</MotionProvider>
+      </body>
     </html>
   );
 }

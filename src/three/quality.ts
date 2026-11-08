@@ -7,6 +7,9 @@ export type QualityTier = "high" | "low";
 /** Rough device capability check, run once on the client. */
 export function detectQuality(): QualityTier {
   if (typeof navigator === "undefined") return "high";
+  // Manual override for QA: ?quality=low or ?quality=high
+  const forced = new URLSearchParams(window.location.search).get("quality");
+  if (forced === "low" || forced === "high") return forced;
   const nav = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } };
   const lowMemory = (nav.deviceMemory ?? 8) <= 4;
   const fewCores = (nav.hardwareConcurrency ?? 8) <= 4;

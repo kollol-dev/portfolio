@@ -60,7 +60,12 @@ export function inspectSkeleton(
   };
   walk(root, 0);
 
-  const skeletons = new Set(skinned.map((m) => m.skeleton));
+  // Optimised GLBs may give each mesh its own Skeleton object; what matters
+  // is that they all drive the same bone nodes.
+  const boneSets = skinned.map((m) => m.skeleton.bones);
+  const sharedBones = boneSets.every(
+    (b) => b.length === boneSets[0]?.length && b.every((bone, i) => bone === boneSets[0][i]),
+  );
   const box = new Box3().setFromObject(root);
 
   let rightArmDropDeg: number | null = null;
@@ -81,7 +86,7 @@ export function inspectSkeleton(
       boneCount: m.skeleton.bones.length,
       rootBone: m.skeleton.bones[0]?.name ?? null,
     })),
-    sharedSkeleton: skeletons.size <= 1,
+    sharedSkeleton: sharedBones,
     animations: animations.map((a) => a.name),
     bounds: { min: v3(box.min), max: v3(box.max), height: r3(box.max.y - box.min.y) },
     rig: rig.matches,
@@ -100,13 +105,8 @@ export function logSkeletonReport(report: SkeletonReport) {
   );
   console.log("Bounds (m):", report.bounds);
   console.log("Animations:", report.animations.length ? report.animations : "none");
-  console.log(
-    "Right arm drop from vertical:",
-    report.rightArmDropDeg === null ? "n/a" : `${report.rightArmDropDeg}°`,
-  );
-  console.table(
-    Object.entries(report.rig).map(([key, m]) => ({ key, bone: m.name ?? "—", via: m.via })),
-  );
+  console.log("Right arm drop from vertical:", report.rightArmDropDeg === null ? "n/a" : `${report.rightArmDropDeg}°`);
+  console.table(Object.entries(report.rig).map(([key, m]) => ({ key, bone: m.name ?? "—", via: m.via })));
   console.table(report.skinnedMeshes);
   console.groupCollapsed("Bone hierarchy");
   for (const b of report.bones) {
@@ -118,8 +118,5 @@ export function logSkeletonReport(report: SkeletonReport) {
 
 export const isRigDebug = (): boolean => {
   if (typeof window === "undefined") return false;
-  return (
-    process.env.NODE_ENV === "development" ||
-    new URLSearchParams(window.location.search).get("debug") === "rig"
-  );
+  return process.env.NODE_ENV === "development" || new URLSearchParams(window.location.search).get("debug") === "rig";
 };

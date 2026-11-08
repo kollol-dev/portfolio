@@ -3,10 +3,8 @@ import type { ComponentPropsWithoutRef, ReactNode } from "react";
 type Variant = "primary" | "secondary" | "text";
 
 const variants: Record<Variant, string> = {
-  primary:
-    "bg-text text-bg hover:bg-accent-strong border border-transparent",
-  secondary:
-    "border border-line-strong text-text hover:border-accent hover:text-accent-strong",
+  primary: "bg-text text-bg hover:bg-accent-strong border border-transparent",
+  secondary: "border border-line-strong text-text hover:border-accent hover:text-accent-strong",
   text: "text-text-muted hover:text-accent-strong px-0!",
 };
 
@@ -33,7 +31,10 @@ export function LinkButton({
     >
       {children}
       {icon ? (
-        <span aria-hidden className="transition-transform duration-(--dur-base) ease-out-expo group-hover:translate-x-0.5">
+        <span
+          aria-hidden
+          className="transition-transform duration-(--dur-base) ease-out-expo group-hover:translate-x-0.5"
+        >
           {icon}
         </span>
       ) : null}
@@ -46,7 +47,7 @@ export function LinkButton({
 export function MissingLink({ label }: { label: string }) {
   return (
     <span
-      className="inline-flex min-h-11 items-center gap-2 rounded-sm border border-dashed border-line px-4 text-caption text-text-faint"
+      className="inline-flex min-h-11 items-center gap-2 rounded-sm border border-dashed border-line px-4 text-caption text-text-subtle"
       title="Placeholder — URL not provided yet"
     >
       {label} <span className="font-mono text-micro uppercase">TBD</span>

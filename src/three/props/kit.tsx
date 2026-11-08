@@ -2,6 +2,7 @@
 
 import { useMemo, type ReactNode } from "react";
 import { Text } from "@react-three/drei";
+import { configureTextBuilder } from "troika-three-text";
 import { Path, Shape } from "three";
 import { materials, palette3d } from "@/styles/tokens3d";
 import { detail, useQuality } from "../quality";
@@ -20,6 +21,15 @@ export const FONTS = {
 } as const;
 
 type FontKey = keyof typeof FONTS;
+
+// troika's defaults pull a fallback font from Google Fonts and missing-glyph
+// fonts from jsDelivr. Keep everything same-origin: our fonts cover every
+// character the props render, and any fallback lookup hits a local path.
+// This module only runs in the browser (Scene loads with ssr: false).
+configureTextBuilder({
+  defaultFontURL: new URL(FONTS.sans, window.location.origin).href,
+  unicodeFontsURL: new URL("/fonts/unicode-fallback", window.location.origin).href,
+});
 
 interface LabelProps {
   children: string;
@@ -128,22 +138,22 @@ export function Plate({ size: [w, h, d], radius, bevel = 0.25, hole, position, r
 
   return (
     <group position={position} rotation={rotation}>
-    <mesh position={[0, 0, -(d - bevelT * 2) / 2]} castShadow>
-      <extrudeGeometry
-        args={[
-          shape,
-          {
-            depth: d - bevelT * 2,
-            bevelEnabled: true,
-            bevelThickness: bevelT,
-            bevelSize: bevelT,
-            bevelSegments: q.bevel,
-            curveSegments: q.curve,
-          },
-        ]}
-      />
-      {children}
-    </mesh>
+      <mesh position={[0, 0, -(d - bevelT * 2) / 2]} castShadow>
+        <extrudeGeometry
+          args={[
+            shape,
+            {
+              depth: d - bevelT * 2,
+              bevelEnabled: true,
+              bevelThickness: bevelT,
+              bevelSize: bevelT,
+              bevelSegments: q.bevel,
+              curveSegments: q.curve,
+            },
+          ]}
+        />
+        {children}
+      </mesh>
     </group>
   );
 }

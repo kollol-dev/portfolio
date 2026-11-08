@@ -17,9 +17,7 @@ const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
  */
 export function ScrollSync() {
   useEffect(() => {
-    const els = SECTION_IDS.map((id) => document.getElementById(id)).filter(
-      (el): el is HTMLElement => el !== null,
-    );
+    const els = SECTION_IDS.map((id) => document.getElementById(id)).filter((el): el is HTMLElement => el !== null);
     if (els.length === 0) return;
     const { setActive } = useScrollStore.getState();
     let raf = 0;
@@ -27,7 +25,11 @@ export function ScrollSync() {
     const compute = () => {
       raf = 0;
       const vh = window.innerHeight;
-      const mid = vh * 0.5;
+      // On mobile the stage band covers the top of the screen; the reading
+      // line is the middle of what's left below it.
+      const stage = document.getElementById("stage")?.getBoundingClientRect();
+      const top = stage && stage.width >= window.innerWidth - 1 ? stage.bottom : 0;
+      const mid = top + (vh - top) * 0.5;
       let active = els[0];
       for (const el of els) {
         if (el.getBoundingClientRect().top <= mid) active = el;

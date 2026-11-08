@@ -14,7 +14,7 @@ const FOIL = palette3d.accent;
 /** 05 Education — clothbound hardcover with foil lettering. */
 export function Book() {
   const edu = portfolio.education[0];
-  const [startYear, endYear] = [edu.period.slice(4, 8), edu.period.slice(-4)];
+  const [startYear, endYear] = edu.period.match(/\d{4}/g) ?? ["", ""];
   return (
     <group position={[0, H / 2, 0]}>
       <Plate size={[W, H, BOARD]} radius={0.003} bevel={0.3} position={[0, 0, D / 2 - BOARD / 2]}>
@@ -32,21 +32,52 @@ export function Book() {
         <meshStandardMaterial color={materials.paper.color} roughness={0.95} />
       </mesh>
 
-      <Label position={[0.004, 0.072, FRONT]} size={0.0046} font="monoMedium" color={FOIL} anchorX="center" letterSpacing={0.22} uppercase>
+      <Label
+        position={[0.004, 0.072, FRONT]}
+        size={0.0046}
+        font="monoMedium"
+        color={FOIL}
+        anchorX="center"
+        letterSpacing={0.22}
+        uppercase
+      >
         {edu.institution}
       </Label>
       <Rule from={[-0.012, 0.061]} to={[0.02, 0.061]} z={FRONT} color={FOIL} width={0.0005} />
       <Label position={[0.004, 0.022, FRONT]} size={0.0175} font="serif" color={FOIL} anchorX="center">
-        B.Sc (Hons.)
+        {edu.cover.title}
       </Label>
-      <Label position={[0.004, -0.004, FRONT]} size={0.0092} font="serifItalic" color={FOIL} anchorX="center" maxWidth={0.11} lineHeight={1.15}>
-        Computer Science &amp; Engineering
+      <Label
+        position={[0.004, -0.004, FRONT]}
+        size={0.0092}
+        font="serifItalic"
+        color={FOIL}
+        anchorX="center"
+        maxWidth={0.11}
+        lineHeight={1.15}
+      >
+        {edu.cover.subtitle}
       </Label>
       <Rule from={[-0.012, -0.03]} to={[0.02, -0.03]} z={FRONT} color={FOIL} width={0.0005} />
-      <Label position={[0.004, -0.042, FRONT]} size={0.0046} font="mono" color={FOIL} anchorX="center" letterSpacing={0.12}>
+      <Label
+        position={[0.004, -0.042, FRONT]}
+        size={0.0046}
+        font="mono"
+        color={FOIL}
+        anchorX="center"
+        letterSpacing={0.12}
+      >
         {`${startYear} — ${endYear}`}
       </Label>
-      <Label position={[0.004, -0.088, FRONT]} size={0.0036} font="mono" color={FOIL} anchorX="center" letterSpacing={0.16} uppercase>
+      <Label
+        position={[0.004, -0.088, FRONT]}
+        size={0.0036}
+        font="mono"
+        color={FOIL}
+        anchorX="center"
+        letterSpacing={0.16}
+        uppercase
+      >
         {edu.location}
       </Label>
     </group>

@@ -1,22 +1,15 @@
 import { portfolio } from "@/data/portfolio";
 import { Section } from "@/components/ui/Section";
+import { Reveal } from "@/components/ui/Reveal";
 import { TagList } from "@/components/ui/Tag";
 
 /** 02 — Experience, as a vertical timeline. */
 export function ExperienceSection() {
   return (
-    <Section
-      id="experience"
-      eyebrow="Experience"
-      title={
-        <>
-          Seven years of <em className="text-accent">backend</em> work.
-        </>
-      }
-    >
+    <Section id="experience">
       <ol className="relative space-y-14 border-l border-line pl-8">
         {portfolio.experience.map((job) => (
-          <li key={`${job.company}-${job.start}`} className="relative">
+          <Reveal as="li" key={`${job.company}-${job.start}`} className="relative">
             <span
               aria-hidden
               className={`absolute top-2 -left-[calc(2rem+4.5px)] size-2 rounded-full border ${
@@ -41,9 +34,25 @@ export function ExperienceSection() {
             <div className="mt-5">
               <TagList items={job.stack} label={`Technologies used at ${job.company}`} />
             </div>
-          </li>
+          </Reveal>
         ))}
       </ol>
+
+      {portfolio.skills.length ? (
+        <Reveal className="mt-20">
+          <h3 className="eyebrow">{portfolio.sections.experience.toolkitTitle ?? "Toolkit"}</h3>
+          <dl className="mt-6 divide-y divide-line border-y border-line">
+            {portfolio.skills.map((group) => (
+              <div key={group.label} className="grid gap-3 py-5 sm:grid-cols-[9rem_1fr] sm:gap-6">
+                <dt className="text-caption text-text-muted">{group.label}</dt>
+                <dd>
+                  <TagList items={group.items} label={group.label} />
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </Reveal>
+      ) : null}
     </Section>
   );
 }

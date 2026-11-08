@@ -16,7 +16,14 @@ export function StudioLights() {
       {/* Built from Lightformers so there is no HDR download. */}
       <Environment resolution={environment.resolution} environmentIntensity={environment.intensity}>
         <Lightformer form="rect" intensity={2} position={[2, 3, 3]} scale={[3, 2, 1]} target={[0, 1, 0]} />
-        <Lightformer form="rect" intensity={0.8} color="#cfdcff" position={[-3, 2, 1]} scale={[2, 3, 1]} target={[0, 1, 0]} />
+        <Lightformer
+          form="rect"
+          intensity={0.8}
+          color="#cfdcff"
+          position={[-3, 2, 1]}
+          scale={[2, 3, 1]}
+          target={[0, 1, 0]}
+        />
         <Lightformer form="ring" intensity={1.2} position={[0, 4, -3]} scale={2} target={[0, 1, 0]} />
       </Environment>
 

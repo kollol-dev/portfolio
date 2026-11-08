@@ -40,6 +40,7 @@
   --gutter: clamp(1rem, 4vw, 3rem);
   --section-py: clamp(5rem, 14vh, 10rem);
   --nav-h: 4rem;
+  --stage-h: 30svh; /* mobile/tablet 3D band; 0 on desktop or when hidden */
   --content-max: 38rem; /* left editorial column measure */
 
   /* Motion */
@@ -50,6 +51,20 @@
   --dur-slow: 640ms;
 
   color-scheme: dark;
+}
+
+html[data-stage="off"] {
+  --stage-h: 0px;
+}
+
+html[data-stage="off"] #stage {
+  border-bottom-width: 0;
+}
+
+@media (min-width: 64rem) {
+  :root {
+    --stage-h: 0px;
+  }
 }
 
 @theme inline {
@@ -117,7 +132,7 @@
 @layer base {
   html {
     background: var(--c-bg);
-    scroll-padding-top: var(--nav-h);
+    scroll-padding-top: calc(var(--nav-h) + var(--stage-h));
     -webkit-text-size-adjust: 100%;
   }
 
@@ -158,7 +173,97 @@
   }
 }
 
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes scroll-cue {
+  0% {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  45% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  55% {
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+}
+
+@keyframes badge-sway {
+  0%,
+  100% {
+    transform: rotate(-1.4deg);
+  }
+  50% {
+    transform: rotate(1.4deg);
+  }
+}
+
 @layer components {
+  /* ID card lanyard: charcoal strap, brass stitching, name woven down it. */
+  .lanyard-strap {
+    position: relative;
+    overflow: hidden;
+    background:
+      linear-gradient(90deg, transparent 2px, rgb(200 169 126 / 0.35) 2px 3px, transparent 3px calc(100% - 3px), rgb(200 169 126 / 0.35) calc(100% - 3px) calc(100% - 2px), transparent calc(100% - 2px)),
+      linear-gradient(90deg, #17171b, #222228 50%, #17171b);
+    mask-image: linear-gradient(to bottom, transparent, #000 45%);
+  }
+  .lanyard-strap > span {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    writing-mode: vertical-rl;
+    font-family: var(--font-mono);
+    font-size: 7px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: rgb(200 169 126 / 0.55);
+  }
+
+  /* The badge sways gently on its lanyard; holds still under the pointer. */
+  .badge-sway {
+    transform-origin: 50% 0;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .badge-sway {
+      animation: badge-sway 6s var(--ease-in-out) infinite;
+    }
+    .badge-sway:hover,
+    .badge-sway:focus-within {
+      animation-play-state: paused;
+    }
+  }
+
+  /* Hero entrance: pure CSS so it runs before (and without) JavaScript.
+     Stagger with style={{ "--d": "120ms" }}. */
+  @media (prefers-reduced-motion: no-preference) {
+    .rise {
+      animation: rise 900ms var(--ease-out-expo) both;
+      animation-delay: var(--d, 0ms);
+    }
+    .scroll-cue-line {
+      animation: scroll-cue 2.4s var(--ease-in-out) infinite;
+    }
+  }
+
   /* Mono eyebrow label used above section headings */
   .eyebrow {
     font-family: var(--font-mono);

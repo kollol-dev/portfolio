@@ -240,3 +240,63 @@ one leadership role (Leading University Computer Club VP).
 - **Camera drift:** within each section the shot eases up to ±4 cm sideways with reading
   progress (`camera.drift`). It's off with reduced motion.
 - **Debug (`?debug=rig`):** `window.__scrollStore` is exposed for timing tests.
+
+## 10. Motion, SEO, accessibility and mobile (Phase 7)
+
+- **Mobile and tablet 3D:** below `lg`, the stage is a fixed band under the nav
+  (`--stage-h: 30svh`) with its own closer camera shot (`camera.presentBand`, chosen
+  when aspect > 1.2). The **3D** button in the nav hides the band and unmounts the
+  canvas, so there's no GPU work and no model download. The choice persists in
+  `localStorage`, and the band defaults to hidden on data-saver connections. The
+  reading line for section detection is the middle of the area below the band.
+- **DOM motion** (`motion`): `Reveal` fades content up on scroll. Server HTML is fully
+  visible (idle → shown), and only content below the fold is hidden, so there's no flash
+  and it works without JS. The hero uses a pure-CSS staggered `rise`. There's also a
+  scroll cue, a nav progress hairline (direct transform, no re-renders), and a desktop
+  stage caption that crossfades the presented prop's name. All of it respects
+  `prefers-reduced-motion`.
+- **SEO:** full `metadata` (title template, description, canonical, Open Graph profile,
+  Twitter large card, robots), `opengraph-image.tsx` (1200×630, site fonts),
+  `sitemap.ts`, `robots.ts`, `icon.svg`, and schema.org `Person` JSON-LD built only from
+  real data. **Set `NEXT_PUBLIC_SITE_URL` in production**; it falls back to
+  `http://localhost:3000`.
+- **Accessibility:** landmarks are header/nav, main, footer and aside (decorative,
+  `aria-hidden`). The skip link targets a focusable `<main>`. The mobile menu moves focus
+  in on open and returns it on Escape. The 3D toggle has a fixed name with `aria-pressed`.
+  Active section uses `aria-current`. Small text meets AA contrast.
+
+## 11. Production hardening (Phase 8)
+
+- **Model:** compressed with gltf-transform (meshopt geometry, WebP textures), 4.21 MB → 1.16 MB.
+  Bone names, hierarchy and meshes were verified identical. Each mesh now has its own `Skin`
+  entry, but they all bind the same 52 bones. `useGLTF(url, false, true)` enables the bundled
+  meshopt decoder; Draco stays off, so drei never fetches a decoder from a CDN.
+- **3D fonts:** subset to Latin and kerning only (177 KB → 90 KB). `configureTextBuilder` points
+  troika's default font and its missing-glyph fallback at same-origin URLs, so text rendering never
+  calls Google Fonts or jsDelivr.
+- **Loading:** `SceneMount` waits for `load` plus `requestIdleCallback` (2 s cap) before mounting
+  the canvas.
+- **Motion:** `LazyMotion` + `m` with `domAnimation` (strict) and `MotionConfig reducedMotion="user"`.
+  Motion's core is still about 50 KB gzip.
+- **Bundle (gzip):** initial JS about 226 KB (React DOM 69, Next runtime about 85, motion about 50,
+  app). The lazy 3D chunk is 331 KB, plus the model at 1.1 MB and fonts at 90 KB.
+- **404:** `app/not-found.tsx` follows the site design and is marked `noindex`.
+- **Fallback caption:** the stage caption hides whenever the no-WebGL panel is showing.
+- **Known noise:** `THREE.Clock` deprecation warning from R3F 9.8 running on three r187. It's harmless
+  and will be fixed upstream.
+
+## 12. Content as JSON, ID card, packaging
+
+- **Content:** `content/portfolio.json` (with `portfolio.schema.json` for editor validation) is the
+  single source of content. `src/data/portfolio.ts` loads it, validates every field (build fails with
+  the exact field path), fills defaults (email social link, laptop screen from `stack`, book cover
+  from `degree`, phone badge from initials) and exports the typed `portfolio` object plus selectors
+  (`featured`, `careerStartYear`, `displayUrl`). Section headings use `*word*` for the accent
+  (`Emphasis`).
+- **ID card** (`components/ui/IdBadge.tsx`): portrait CSS-3D card on a lanyard in the intro. It flips
+  with a motion spring (`rotateY`) on mouse hover and toggles on click/tap, with a real `aria-pressed`
+  button for keyboards. Focusing a back-side link flips it to the back. It sways on its lanyard
+  (CSS, off for reduced motion). It sits beside the actions via a container query.
+- **Packaging:** `npm run package` → `release/portfolio-upload.zip` (source only). Build-time packages
+  (Tailwind, TypeScript, types) are in `dependencies`, so installs that skip devDependencies still
+  build. `engines.node >= 20.9`.

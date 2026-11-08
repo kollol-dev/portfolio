@@ -9,7 +9,7 @@ export function Value({ text, className = "" }: { text: string; className?: stri
   const hint = text.slice(PLACEHOLDER_PREFIX.length).trim();
   return (
     <span
-      className={`${className} rounded-xs border border-dashed border-line-strong px-1.5 text-text-faint`}
+      className={`${className} rounded-xs border border-dashed border-line-strong px-1.5 text-text-subtle`}
       title="Placeholder — content not provided yet"
     >
       <span className="font-mono text-micro uppercase tracking-wider">TBD</span>
