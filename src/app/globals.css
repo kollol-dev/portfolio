@@ -278,3 +278,137 @@ html[data-stage="off"] #stage {
     border-color: var(--c-line);
   }
 }
+
+/* ------------------------------------------------------------------ */
+/* Blog article typography                                            */
+/* ------------------------------------------------------------------ */
+@layer components {
+  .prose-article {
+    color: var(--c-text-muted);
+    font-size: 1.0625rem;
+    line-height: 1.8;
+  }
+  .prose-article > * + * {
+    margin-top: 1.25em;
+  }
+  .prose-article h2,
+  .prose-article h3,
+  .prose-article h4 {
+    position: relative;
+    color: var(--c-text);
+    scroll-margin-top: calc(var(--nav-h) + 1.5rem);
+  }
+  .prose-article h2 {
+    margin-top: 2.4em;
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 1.3rem + 1vw, 2.1rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+  .prose-article h3 {
+    margin-top: 2em;
+    font-size: 1.25rem;
+    font-weight: 500;
+    line-height: 1.35;
+  }
+  .prose-article h4 {
+    margin-top: 1.6em;
+    font-weight: 500;
+  }
+  .prose-article .heading-anchor {
+    position: absolute;
+    left: -1.1em;
+    color: var(--c-text-faint);
+    text-decoration: none;
+    opacity: 0;
+    transition: opacity var(--dur-fast);
+  }
+  .prose-article :is(h2, h3, h4):hover .heading-anchor {
+    opacity: 1;
+  }
+  .prose-article a:not(.heading-anchor) {
+    color: var(--c-text);
+    text-decoration: underline;
+    text-decoration-color: var(--c-accent);
+    text-underline-offset: 3px;
+  }
+  .prose-article a:not(.heading-anchor):hover {
+    color: var(--c-accent-strong);
+  }
+  .prose-article strong {
+    color: var(--c-text);
+    font-weight: 600;
+  }
+  .prose-article ul,
+  .prose-article ol {
+    padding-left: 1.3em;
+  }
+  .prose-article ul {
+    list-style: disc;
+  }
+  .prose-article ol {
+    list-style: decimal;
+  }
+  .prose-article li + li {
+    margin-top: 0.4em;
+  }
+  .prose-article li::marker {
+    color: var(--c-accent);
+  }
+  .prose-article blockquote {
+    border-left: 1px solid var(--c-accent);
+    padding-left: 1.2em;
+    color: var(--c-text);
+    font-style: italic;
+  }
+  .prose-article code {
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius-xs);
+    background: var(--c-surface);
+    padding: 0.1em 0.35em;
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--c-text);
+  }
+  .prose-article pre {
+    overflow-x: auto;
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius-md);
+    background: var(--c-inset);
+    padding: 1rem 1.2rem;
+    line-height: 1.6;
+  }
+  .prose-article pre code {
+    border: 0;
+    background: none;
+    padding: 0;
+  }
+  .prose-article img {
+    width: 100%;
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius-md);
+  }
+  .prose-article figcaption {
+    margin-top: 0.5em;
+    text-align: center;
+    font-size: 0.8125rem;
+    color: var(--c-text-subtle);
+  }
+  .prose-article hr {
+    border-color: var(--c-line);
+  }
+  .prose-article table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+  }
+  .prose-article :is(th, td) {
+    border-bottom: 1px solid var(--c-line);
+    padding: 0.6em 0.5em;
+    text-align: left;
+  }
+  .prose-article th {
+    color: var(--c-text);
+    font-weight: 500;
+  }
+}

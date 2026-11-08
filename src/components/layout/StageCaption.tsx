@@ -1,13 +1,13 @@
 "use client";
 
 import { AnimatePresence, m } from "motion/react";
-import { SECTIONS } from "@/config/sections";
+import { useSections } from "@/content/ContentProvider";
 import { useScrollStore } from "@/lib/scrollStore";
 
 /** Editorial caption on the desktop stage naming what the avatar is holding. */
 export function StageCaption() {
   const active = useScrollStore((s) => s.active);
-  const meta = SECTIONS.find((s) => s.id === active);
+  const meta = useSections().find((s) => s.id === active);
 
   return (
     // Hidden when the stage shows its no-WebGL fallback (nothing is being presented).

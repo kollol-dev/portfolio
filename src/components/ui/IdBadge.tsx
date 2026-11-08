@@ -4,7 +4,8 @@ import { useState, type PointerEvent, type ReactNode } from "react";
 import Image from "next/image";
 import { m } from "motion/react";
 import { MapPin, RefreshCw } from "lucide-react";
-import { careerStartYear, portfolio } from "@/data/portfolio";
+import { careerStartYear } from "@/data/portfolio";
+import { useContent } from "@/content/ContentProvider";
 import { SocialIcon } from "./BrandIcons";
 import { Value } from "./Value";
 
@@ -33,9 +34,10 @@ function Face({ children, back = false }: { children: ReactNode; back?: boolean 
  * through the site-wide MotionConfig.
  */
 export function IdBadge() {
+  const portfolio = useContent();
   const [flipped, setFlipped] = useState(false);
   const { profile } = portfolio;
-  const since = careerStartYear();
+  const since = careerStartYear(portfolio);
   const profiles = profile.socials.filter((s) => s.kind !== "email");
 
   const onHover = (value: boolean) => (e: PointerEvent) => {

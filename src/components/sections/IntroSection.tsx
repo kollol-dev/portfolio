@@ -1,15 +1,15 @@
 import type { CSSProperties } from "react";
 import { ArrowDown, Download } from "lucide-react";
-import { portfolio } from "@/data/portfolio";
+import type { Portfolio } from "@/data/portfolio";
 import { LinkButton } from "@/components/ui/LinkButton";
 import { SocialLinks } from "@/components/ui/BrandIcons";
 import { IdBadge } from "@/components/ui/IdBadge";
-import { SECTIONS } from "@/config/sections";
+import { sectionMeta } from "@/config/sections";
 
 /** 01 — Introduction. Holds the page's only <h1>. */
-export function IntroSection() {
-  const { profile } = portfolio;
-  const index = SECTIONS[0].index;
+export function IntroSection({ content }: { content: Portfolio }) {
+  const { profile } = content;
+  const { index } = sectionMeta(content, "intro");
   const d = (ms: number) => ({ "--d": `${ms}ms` }) as CSSProperties;
 
   return (

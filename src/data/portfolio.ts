@@ -1,16 +1,14 @@
 /**
- * Content loader.
+ * Content model: types, validation and helpers. No I/O.
  *
- * All site content lives in `content/portfolio.json` — edit that file, not
- * this one. This module reads it, checks every field, fills in defaults and
- * exports a typed `portfolio` object the rest of the site uses.
- *
- * A mistake in the JSON (missing field, wrong type, unknown value) stops the
- * build with a message naming the exact field, instead of shipping a broken page.
+ * The content itself is edited in the admin dashboard (/admin), or by hand in
+ * the JSON file it saves (see src/content/store.ts). `parsePortfolio` checks
+ * every field, fills in defaults and returns the typed object the site uses.
+ * A mistake (missing field, wrong type, unknown value) throws a ContentError
+ * naming the exact field, so a bad save is rejected instead of breaking the page.
  *
  * Strings starting with "[PLACEHOLDER]" render as a dashed TBD marker.
  */
-import raw from "../../content/portfolio.json";
 
 export const PLACEHOLDER_PREFIX = "[PLACEHOLDER]";
 export const isPlaceholder = (value: string | undefined | null): boolean =>
@@ -135,9 +133,22 @@ export const SECTION_KEYS = [
 ] as const;
 export type SectionKey = (typeof SECTION_KEYS)[number];
 
+export interface PortfolioSeo {
+  /** <title>; empty means "Name — Title". */
+  title?: string;
+  /** Meta description; empty means "Name — Title. Summary". */
+  description?: string;
+  /** Main phrase you want to rank for (Rank Math-style analysis). */
+  focusKeyword?: string;
+  secondaryKeywords: string[];
+  keywords: string[];
+  /** Ask search engines not to index the site (e.g. while drafting). */
+  noindex: boolean;
+}
+
 export interface Portfolio {
   profile: Profile;
-  seo: { keywords: string[] };
+  seo: PortfolioSeo;
   sections: Record<SectionKey, SectionCopy>;
   skills: SkillGroup[];
   experience: Role[];
@@ -152,9 +163,13 @@ export interface Portfolio {
 
 type Obj = Record<string, unknown>;
 
-class ContentError extends Error {
-  constructor(path: string, problem: string) {
-    super(`content/portfolio.json → ${path} ${problem}`);
+export class ContentError extends Error {
+  constructor(
+    /** Field path, e.g. "experience[2].start" — the dashboard highlights it. */
+    readonly path: string,
+    readonly problem: string,
+  ) {
+    super(`Content error → ${path} ${problem}`);
     this.name = "ContentError";
   }
 }
@@ -348,7 +363,14 @@ function parse(data: unknown): Portfolio {
 
   return {
     profile,
-    seo: { keywords: strList(seo, "keywords", "seo", true) },
+    seo: {
+      title: optStr(seo, "title", "seo"),
+      description: optStr(seo, "description", "seo"),
+      focusKeyword: optStr(seo, "focusKeyword", "seo"),
+      secondaryKeywords: strList(seo, "secondaryKeywords", "seo", true),
+      keywords: strList(seo, "keywords", "seo", true),
+      noindex: bool(seo, "noindex", "seo"),
+    },
     sections,
     skills,
     experience,
@@ -360,7 +382,8 @@ function parse(data: unknown): Portfolio {
   };
 }
 
-export const portfolio: Portfolio = parse(raw);
+/** Validate raw JSON content; throws ContentError on the first bad field. */
+export const parsePortfolio = (data: unknown): Portfolio => parse(data);
 
 /* ------------------------------------------------------------ selectors */
 
@@ -369,7 +392,16 @@ export const featured = <T extends { featured: boolean }>(items: T[]): T | undef
   items.find((i) => i.featured) ?? items[0];
 
 /** Year the career started (earliest role), e.g. "2019". */
-export const careerStartYear = (): string | undefined => portfolio.experience.at(-1)?.start.match(/\d{4}/)?.[0];
+export const careerStartYear = (content: Portfolio): string | undefined =>
+  content.experience.at(-1)?.start.match(/\d{4}/)?.[0];
+
+/** Page <title>: the SEO title if set, else "Name — Title". */
+export const seoTitle = (content: Portfolio) =>
+  content.seo.title ?? `${content.profile.name} — ${content.profile.title}`;
+
+/** Meta description: the SEO description if set, else "Name — Title. Summary". */
+export const seoDescription = (content: Portfolio) =>
+  content.seo.description ?? `${content.profile.name} — ${content.profile.title}. ${content.profile.summary}`;
 
 /** "github.com/handle" style display text for a profile URL. */
 export const displayUrl = (href: string) => href.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");

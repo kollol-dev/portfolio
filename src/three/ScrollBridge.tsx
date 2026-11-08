@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { SECTIONS } from "@/config/sections";
+import { SECTION_PROPS, type SectionId } from "@/config/sections";
 import { useScrollStore } from "@/lib/scrollStore";
 import type { AvatarController } from "./controller/AvatarController";
 
@@ -12,7 +12,7 @@ import type { AvatarController } from "./controller/AvatarController";
  */
 export const SETTLE_MS = 160;
 
-const propFor = (id: string) => SECTIONS.find((s) => s.id === id)?.prop ?? null;
+const propFor = (id: SectionId) => SECTION_PROPS[id] ?? null;
 
 /** Feeds the active section from the scroll store into the avatar controller. */
 export function ScrollBridge({ controller }: { controller: AvatarController }) {

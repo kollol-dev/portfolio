@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { ArrowHelper, Quaternion, Vector3, type Object3D } from "three";
-import { SECTIONS, type PropId } from "@/config/sections";
+import { SECTION_PROPS, type PropId } from "@/config/sections";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 import { useScrollStore } from "@/lib/scrollStore";
 import { AvatarController } from "../controller/AvatarController";
@@ -51,7 +51,7 @@ export function AvatarAnimator({ rig, root, onController }: Props) {
     if (!debug || !controller) return;
     window.__avatar = controller;
     window.__scrollStore = useScrollStore;
-    const props = SECTIONS.map((s) => s.prop).filter((p): p is PropId => p !== null);
+    const props = Object.values(SECTION_PROPS).filter((p): p is PropId => p !== null);
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "0") controller.setTarget(null);
       const n = Number(e.key);

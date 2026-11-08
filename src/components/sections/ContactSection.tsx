@@ -1,18 +1,19 @@
 import { ArrowUpRight, Download, Mail } from "lucide-react";
-import { displayUrl, portfolio } from "@/data/portfolio";
+import { displayUrl, type Portfolio } from "@/data/portfolio";
 import { Section } from "@/components/ui/Section";
+import { sectionMeta } from "@/config/sections";
 import { Reveal } from "@/components/ui/Reveal";
 import { LinkButton } from "@/components/ui/LinkButton";
 import { SocialIcon } from "@/components/ui/BrandIcons";
 
 /** 07 — Contact. Real mailto, no form. */
-export function ContactSection() {
-  const { profile } = portfolio;
+export function ContactSection({ content }: { content: Portfolio }) {
+  const { profile } = content;
   const profiles = profile.socials.filter((s) => s.kind !== "email");
-  const { intro } = portfolio.sections.contact;
+  const { intro } = content.sections.contact;
 
   return (
-    <Section id="contact">
+    <Section meta={sectionMeta(content, "contact")}>
       <Reveal>
         {intro ? <p className="text-lead text-pretty text-text-muted">{intro}</p> : null}
 

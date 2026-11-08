@@ -14,7 +14,7 @@ mkdir -p release
 rm -f "$OUT"
 
 zip -r -q -X "$OUT" . \
-  -x "node_modules/*" ".next/*" "out/*" "release/*" ".git/*" ".claude/*" ".vscode/*" ".idea/*" \
+  -x "node_modules/*" ".next/*" "out/*" "release/*" ".data/*" ".git/*" ".claude/*" ".vscode/*" ".idea/*" \
   -x "*.zip" "*.DS_Store" "*.tsbuildinfo" "next-env.d.ts" "coverage/*" \
   -x ".env.local" ".env.*.local" "npm-debug.log*"
 

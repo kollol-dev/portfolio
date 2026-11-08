@@ -1,6 +1,7 @@
 "use client";
 
-import { careerStartYear, portfolio } from "@/data/portfolio";
+import { careerStartYear } from "@/data/portfolio";
+import { useContent } from "@/content/ContentProvider";
 import { materials, palette3d } from "@/styles/tokens3d";
 import { Dot, Label, Mat, Panel, Plate, Rule, ScreenSurface } from "./kit";
 
@@ -13,6 +14,7 @@ const years = (start: string, end: string) => `${start.slice(-4)}–${end === "P
 
 /** 02 Experience — tablet showing the role timeline. */
 export function Tablet() {
+  const portfolio = useContent();
   const roles = portfolio.experience.slice(0, 4);
   const top = 0.03;
   const step = 0.03;
@@ -45,7 +47,7 @@ export function Tablet() {
         anchorX="right"
         letterSpacing={0.06}
       >
-        {`${careerStartYear() ?? ""} — PRESENT`}
+        {`${careerStartYear(portfolio) ?? ""} — PRESENT`}
       </Label>
       <Rule from={[-0.105, 0.051]} to={[0.105, 0.051]} z={UI} color="#2a2a31" />
 

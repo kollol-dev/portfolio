@@ -309,3 +309,18 @@ native parts (`@tailwindcss/oxide`, `lightningcss`) need only GLIBC_2.14 and wor
 `@next/swc-wasm-nodejs` (exact version match) for the automatic WASM fallback, `next build --webpack`
 (Turbopack has no WASM support), `next.config.mjs`, and Tailwind via `@tailwindcss/postcss`. Verified
 with `NEXT_TEST_WASM=1 npm run build` (`loadBindings().isWasm === true`). Node 22 is required.
+
+## 14. Dashboard, blog and SEO
+
+- **Runtime content:** `src/content/store.ts` reads and writes JSON in `CONTENT_DATA_DIR` (default `.data/`),
+  seeded from `content/*.json`. Reads are `"use cache"` with tags (`content`, `blog`), and Server Actions call
+  `updateTag` after a save. Live posts use `cacheLife("hours")` so scheduled posts appear on time.
+- **Auth:** scrypt password hash in an env var, an HMAC-signed httpOnly cookie on `/admin`, and a login
+  throttle. `src/proxy.ts` guards `/admin`, and pages and actions re-verify the session.
+- **Blog:** `src/data/blog.ts` (model and validation), `src/content/markdown.ts` (marked: escaped HTML,
+  heading ids, `{nofollow newtab sponsored}` link options, link and image extraction), and
+  `analyzeArticle` in `seoAnalysis.ts`.
+  - Pages are `app/blog` (index, `[slug]`, OG image, RSS), plus `app/llms.txt` and `app/media/[name]`.
+  - `[slug]` reads params inside `<Suspense>` (ISR with Cache Components), so posts published after the
+    build render on first visit and are then cached.
+  - The proxy answers unknown, draft and scheduled slugs with a real 404 before streaming starts.

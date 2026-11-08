@@ -2,13 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Download, Menu, X } from "lucide-react";
-import { SECTIONS } from "@/config/sections";
-import { portfolio } from "@/data/portfolio";
+import Link from "next/link";
+import { useContent, useHasBlog, useSections } from "@/content/ContentProvider";
 import { useScrollStore } from "@/lib/scrollStore";
 import { StageToggle } from "./StageToggle";
 import { ScrollProgress } from "./ScrollProgress";
-
-const links = SECTIONS.filter((s) => s.id !== "intro");
 
 /**
  * Fixed top navigation: section links with the active one highlighted
@@ -18,7 +16,9 @@ export function SiteNav() {
   const [open, setOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
-  const { profile } = portfolio;
+  const { profile } = useContent();
+  const links = useSections().filter((s) => s.id !== "intro");
+  const hasBlog = useHasBlog();
   const active = useScrollStore((st) => st.active);
 
   // Move focus into the menu on open; close on Escape and return focus to the toggle.
@@ -79,6 +79,16 @@ export function SiteNav() {
               </li>
             );
           })}
+          {hasBlog ? (
+            <li>
+              <Link
+                href="/blog"
+                className="flex min-h-11 items-center rounded-sm px-3 text-caption text-text-muted transition-colors duration-(--dur-base) hover:text-text"
+              >
+                Blog
+              </Link>
+            </li>
+          ) : null}
         </ul>
 
         <div className="flex items-center gap-2">
@@ -129,6 +139,18 @@ export function SiteNav() {
               </a>
             </li>
           ))}
+          {hasBlog ? (
+            <li>
+              <Link
+                href="/blog"
+                onClick={() => setOpen(false)}
+                className="flex min-h-12 items-baseline gap-4 py-3 text-lead text-text-muted"
+              >
+                <span className="font-mono text-micro text-accent">→</span>
+                Blog
+              </Link>
+            </li>
+          ) : null}
         </ul>
       </div>
     </header>

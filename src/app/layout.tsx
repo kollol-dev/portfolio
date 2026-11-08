@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import { SITE_URL } from "@/config/site";
-import { portfolio } from "@/data/portfolio";
 import { MotionProvider } from "@/components/ui/MotionProvider";
 
 const geistSans = Geist({
@@ -22,37 +21,10 @@ const instrumentSerif = Instrument_Serif({
   style: ["normal", "italic"],
 });
 
-const { profile } = portfolio;
-const description = `${profile.name} — ${profile.title}. ${profile.summary}`;
-
+// Site-wide defaults only. The home page's SEO tags (title, description,
+// Open Graph, robots) come from the live content in app/page.tsx.
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: {
-    default: `${profile.name} — ${profile.title}`,
-    template: `%s — ${profile.name}`,
-  },
-  description,
-  applicationName: `${profile.name} Portfolio`,
-  authors: [{ name: profile.name, url: SITE_URL }],
-  creator: profile.name,
-  keywords: portfolio.seo.keywords,
-  alternates: { canonical: "/" },
-  openGraph: {
-    type: "profile",
-    url: "/",
-    siteName: profile.name,
-    title: `${profile.name} — ${profile.title}`,
-    description,
-    locale: "en_US",
-    firstName: profile.firstName,
-    lastName: profile.lastName,
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `${profile.name} — ${profile.title}`,
-    description,
-  },
-  robots: { index: true, follow: true },
   formatDetection: { telephone: false },
 };
 

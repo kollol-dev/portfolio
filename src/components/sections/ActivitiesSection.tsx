@@ -1,6 +1,7 @@
 import { Award, HandHeart, Users } from "lucide-react";
-import { portfolio, type Activity } from "@/data/portfolio";
+import { type Activity, type Portfolio } from "@/data/portfolio";
 import { Section } from "@/components/ui/Section";
+import { sectionMeta } from "@/config/sections";
 import { Reveal } from "@/components/ui/Reveal";
 import { Value } from "@/components/ui/Value";
 
@@ -11,11 +12,11 @@ const kindMeta: Record<Activity["kind"], { label: string; Icon: typeof Users }> 
 };
 
 /** 06 — Activities & achievements, ending with the closing statement. */
-export function ActivitiesSection() {
+export function ActivitiesSection({ content }: { content: Portfolio }) {
   return (
-    <Section id="activities">
+    <Section meta={sectionMeta(content, "activities")}>
       <ul className="grid gap-px overflow-hidden rounded-md border border-line bg-line">
-        {portfolio.activities.map((act, i) => {
+        {content.activities.map((act, i) => {
           const { label, Icon } = kindMeta[act.kind];
           return (
             <Reveal as="li" key={`${act.kind}-${i}`} delay={i * 0.06} className="bg-bg p-6">
@@ -44,7 +45,7 @@ export function ActivitiesSection() {
       <Reveal>
         <blockquote className="mt-16 border-l border-accent pl-6">
           <p className="font-display text-h3 text-balance text-text italic sm:text-[1.75rem] sm:leading-snug">
-            {portfolio.closingStatement}
+            {content.closingStatement}
           </p>
         </blockquote>
       </Reveal>

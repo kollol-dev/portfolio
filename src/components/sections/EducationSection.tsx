@@ -1,12 +1,13 @@
-import { portfolio } from "@/data/portfolio";
+import { type Portfolio } from "@/data/portfolio";
 import { Section } from "@/components/ui/Section";
+import { sectionMeta } from "@/config/sections";
 import { Reveal } from "@/components/ui/Reveal";
 
 /** 05 — Education. */
-export function EducationSection() {
+export function EducationSection({ content }: { content: Portfolio }) {
   return (
-    <Section id="education">
-      {portfolio.education.map((edu) => (
+    <Section meta={sectionMeta(content, "education")}>
+      {content.education.map((edu) => (
         <Reveal key={edu.institution}>
           <article className="border-y border-line py-8">
             <p className="font-mono text-micro tracking-wider text-text-subtle uppercase">{edu.period}</p>

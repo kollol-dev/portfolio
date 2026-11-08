@@ -1,6 +1,7 @@
 import { ArrowUpRight, Lock } from "lucide-react";
-import { portfolio, type Project } from "@/data/portfolio";
+import { type Project, type Portfolio } from "@/data/portfolio";
 import { Section } from "@/components/ui/Section";
+import { sectionMeta } from "@/config/sections";
 import { Reveal } from "@/components/ui/Reveal";
 import { TagList } from "@/components/ui/Tag";
 import { LinkButton, MissingLink } from "@/components/ui/LinkButton";
@@ -53,11 +54,11 @@ function DetailList({ title, items }: { title: string; items: string[] }) {
 }
 
 /** 04 — Featured projects. */
-export function ProjectsSection() {
+export function ProjectsSection({ content }: { content: Portfolio }) {
   return (
-    <Section id="projects">
+    <Section meta={sectionMeta(content, "projects")}>
       <div className="space-y-6">
-        {portfolio.projects.map((project, i) => (
+        {content.projects.map((project, i) => (
           <Reveal key={`${project.name}-${i}`}>
             <article
               aria-labelledby={`project-${i}`}

@@ -1,0 +1,24 @@
+{
+  "posts": [
+    {
+      "id": "welcome-draft",
+      "slug": "how-i-design-event-driven-backends",
+      "title": "How I Design Event-Driven Backends That Stay Reliable",
+      "excerpt": "A practical walkthrough of the patterns I use for queues, retries and idempotency when building event-driven backend systems.",
+      "body": "> **Draft:** this is an example post to show the editor. Edit it into a real article or delete it. It stays hidden until you publish it.\n\n## Why event-driven?\n\nWrite the introduction here. Mention your focus keyword early, in the first paragraph.\n\n## The patterns I rely on\n\n### Idempotent consumers\n\nExplain the idea. Link to a related section of your portfolio, like [my experience](/#experience), and to a trusted outside source, like the [RabbitMQ reliability guide](https://www.rabbitmq.com/docs/reliability).\n\n### Retries with backoff\n\nKeep paragraphs short and scannable.\n\n## Lessons from production\n\nShare a concrete example from your own work.\n",
+      "status": "draft",
+      "publishedAt": "2026-11-09T09:00:00.000Z",
+      "updatedAt": "2026-11-09T09:00:00.000Z",
+      "category": "Backend Engineering",
+      "tags": ["Event-driven", "Node.js", "Message queues"],
+      "faqs": [
+        { "question": "What is an idempotent consumer?", "answer": "A consumer that produces the same result no matter how many times it processes the same message." }
+      ],
+      "seo": {
+        "focusKeyword": "event-driven backend",
+        "secondaryKeywords": ["message queues", "idempotency"],
+        "noindex": false
+      }
+    }
+  ]
+}

@@ -10,7 +10,8 @@
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",
-    "package": "bash scripts/package.sh"
+    "package": "bash scripts/package.sh",
+    "admin:setup": "node scripts/admin-setup.mjs"
   },
   "dependencies": {
     "@next/swc-wasm-nodejs": "16.4.5",
@@ -22,6 +23,7 @@
     "@types/react-dom": "^19",
     "@types/three": "^0.187.0",
     "lucide-react": "^1.70.0",
+    "marked": "^18.1.3",
     "motion": "^14.10.1",
     "next": "16.4.5",
     "react": "19.3.0",

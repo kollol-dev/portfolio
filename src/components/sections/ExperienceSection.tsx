@@ -1,14 +1,15 @@
-import { portfolio } from "@/data/portfolio";
+import { type Portfolio } from "@/data/portfolio";
 import { Section } from "@/components/ui/Section";
+import { sectionMeta } from "@/config/sections";
 import { Reveal } from "@/components/ui/Reveal";
 import { TagList } from "@/components/ui/Tag";
 
 /** 02 — Experience, as a vertical timeline. */
-export function ExperienceSection() {
+export function ExperienceSection({ content }: { content: Portfolio }) {
   return (
-    <Section id="experience">
+    <Section meta={sectionMeta(content, "experience")}>
       <ol className="relative space-y-14 border-l border-line pl-8">
-        {portfolio.experience.map((job) => (
+        {content.experience.map((job) => (
           <Reveal as="li" key={`${job.company}-${job.start}`} className="relative">
             <span
               aria-hidden
@@ -38,11 +39,11 @@ export function ExperienceSection() {
         ))}
       </ol>
 
-      {portfolio.skills.length ? (
+      {content.skills.length ? (
         <Reveal className="mt-20">
-          <h3 className="eyebrow">{portfolio.sections.experience.toolkitTitle ?? "Toolkit"}</h3>
+          <h3 className="eyebrow">{content.sections.experience.toolkitTitle ?? "Toolkit"}</h3>
           <dl className="mt-6 divide-y divide-line border-y border-line">
-            {portfolio.skills.map((group) => (
+            {content.skills.map((group) => (
               <div key={group.label} className="grid gap-3 py-5 sm:grid-cols-[9rem_1fr] sm:gap-6">
                 <dt className="text-caption text-text-muted">{group.label}</dt>
                 <dd>

@@ -1,7 +1,8 @@
 import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { displayUrl, portfolio } from "@/data/portfolio";
+import { displayUrl } from "@/data/portfolio";
+import { getContent } from "@/content/store";
 
 export const alt = "Kollol Chakraborty — Senior Software Engineer";
 export const size = { width: 1200, height: 630 };
@@ -17,7 +18,7 @@ const [serif, serifItalic, sans, mono] = await Promise.all([
 
 /** Share card in the site's own typography. */
 export default async function Image() {
-  const { profile } = portfolio;
+  const { profile } = await getContent();
   const github = profile.socials.find((s) => s.kind === "github");
   return new ImageResponse(
     (

@@ -3,52 +3,150 @@
   "title": "Portfolio content",
   "description": "Everything shown on the site. Text starting with \"[PLACEHOLDER]\" shows as a dashed TBD box. Wrap words in *asterisks* in section titles for the brass italic accent.",
   "type": "object",
-  "required": ["profile", "sections", "skills", "experience", "certifications", "projects", "education", "activities", "closingStatement"],
+  "required": [
+    "profile",
+    "sections",
+    "skills",
+    "experience",
+    "certifications",
+    "projects",
+    "education",
+    "activities",
+    "closingStatement"
+  ],
   "additionalProperties": false,
   "definitions": {
-    "text": { "type": "string", "minLength": 1 },
-    "optionalUrl": { "type": "string", "description": "Full URL, or \"\" if you don't have one yet." },
-    "textList": { "type": "array", "items": { "type": "string" } },
+    "text": {
+      "type": "string",
+      "minLength": 1
+    },
+    "optionalUrl": {
+      "type": "string",
+      "description": "Full URL, or \"\" if you don't have one yet."
+    },
+    "textList": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "section": {
       "type": "object",
-      "required": ["navLabel", "eyebrow", "title"],
+      "required": [
+        "navLabel",
+        "eyebrow",
+        "title"
+      ],
       "properties": {
-        "navLabel": { "type": "string", "description": "Text in the top navigation." },
-        "eyebrow": { "type": "string", "description": "Small uppercase label above the heading." },
-        "title": { "type": "string", "description": "Heading. Wrap a word in *asterisks* for the brass italic accent." },
-        "stageCaption": { "type": "string", "description": "Caption on the 3D stage while this section's object is shown." }
+        "navLabel": {
+          "type": "string",
+          "description": "Text in the top navigation."
+        },
+        "eyebrow": {
+          "type": "string",
+          "description": "Small uppercase label above the heading."
+        },
+        "title": {
+          "type": "string",
+          "description": "Heading. Wrap a word in *asterisks* for the brass italic accent."
+        },
+        "stageCaption": {
+          "type": "string",
+          "description": "Caption on the 3D stage while this section's object is shown."
+        }
       }
     }
   },
   "properties": {
-    "$schema": { "type": "string" },
+    "$schema": {
+      "type": "string"
+    },
     "profile": {
       "type": "object",
-      "required": ["name", "firstName", "lastName", "title", "location", "availability", "headline", "summary", "email", "resumePath", "photo", "socials"],
+      "required": [
+        "name",
+        "firstName",
+        "lastName",
+        "title",
+        "location",
+        "availability",
+        "headline",
+        "summary",
+        "email",
+        "resumePath",
+        "photo",
+        "socials"
+      ],
       "additionalProperties": false,
       "properties": {
-        "name": { "$ref": "#/definitions/text" },
-        "firstName": { "$ref": "#/definitions/text", "description": "First line of the big hero name." },
-        "lastName": { "$ref": "#/definitions/text", "description": "Second line of the hero name, in brass italic." },
-        "title": { "$ref": "#/definitions/text", "description": "Job title, e.g. Senior Software Engineer." },
-        "location": { "$ref": "#/definitions/text", "description": "\"City, Country\" — used on the ID card and in search data." },
-        "availability": { "$ref": "#/definitions/text", "description": "Shown on the back of the ID card." },
-        "headline": { "$ref": "#/definitions/text", "description": "One-line statement under your name." },
-        "summary": { "$ref": "#/definitions/text", "description": "Short paragraph in the intro; also the page description for Google." },
-        "email": { "type": "string", "format": "email" },
-        "resumePath": { "type": "string", "description": "Path to the PDF inside /public, e.g. /resume.pdf." },
-        "photo": { "type": "string", "description": "Portrait for the ID card inside /public, e.g. /images/portrait.webp (4:5 ratio works best)." },
+        "name": {
+          "$ref": "#/definitions/text"
+        },
+        "firstName": {
+          "$ref": "#/definitions/text",
+          "description": "First line of the big hero name."
+        },
+        "lastName": {
+          "$ref": "#/definitions/text",
+          "description": "Second line of the hero name, in brass italic."
+        },
+        "title": {
+          "$ref": "#/definitions/text",
+          "description": "Job title, e.g. Senior Software Engineer."
+        },
+        "location": {
+          "$ref": "#/definitions/text",
+          "description": "\"City, Country\" — used on the ID card and in search data."
+        },
+        "availability": {
+          "$ref": "#/definitions/text",
+          "description": "Shown on the back of the ID card."
+        },
+        "headline": {
+          "$ref": "#/definitions/text",
+          "description": "One-line statement under your name."
+        },
+        "summary": {
+          "$ref": "#/definitions/text",
+          "description": "Short paragraph in the intro; also the page description for Google."
+        },
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "resumePath": {
+          "type": "string",
+          "description": "Path to the PDF inside /public, e.g. /resume.pdf."
+        },
+        "photo": {
+          "type": "string",
+          "description": "Portrait for the ID card inside /public, e.g. /images/portrait.webp (4:5 ratio works best)."
+        },
         "socials": {
           "type": "array",
           "description": "Profile links. An email link is added automatically.",
           "items": {
             "type": "object",
-            "required": ["kind", "label", "href"],
+            "required": [
+              "kind",
+              "label",
+              "href"
+            ],
             "additionalProperties": false,
             "properties": {
-              "kind": { "enum": ["github", "linkedin", "email"] },
-              "label": { "type": "string" },
-              "href": { "type": "string" }
+              "kind": {
+                "enum": [
+                  "github",
+                  "linkedin",
+                  "email"
+                ]
+              },
+              "label": {
+                "type": "string"
+              },
+              "href": {
+                "type": "string"
+              }
             }
           }
         }
@@ -57,29 +155,98 @@
     "seo": {
       "type": "object",
       "additionalProperties": false,
-      "properties": { "keywords": { "$ref": "#/definitions/textList", "description": "Search keywords." } }
+      "description": "Search engine settings (edit in /admin → SEO).",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Page title in Google (aim for 50–60 characters). Leave empty to use “Name — Title”."
+        },
+        "description": {
+          "type": "string",
+          "description": "Meta description in Google (aim for 120–160 characters). Leave empty to use your summary."
+        },
+        "focusKeyword": {
+          "type": "string",
+          "description": "The main phrase you want to rank for, e.g. “senior backend engineer”."
+        },
+        "secondaryKeywords": {
+          "$ref": "#/definitions/textList",
+          "description": "Related phrases to support the focus keyword."
+        },
+        "keywords": {
+          "$ref": "#/definitions/textList",
+          "description": "Meta keywords."
+        },
+        "noindex": {
+          "type": "boolean",
+          "description": "Hide the site from search engines (e.g. while drafting)."
+        }
+      }
     },
     "sections": {
       "type": "object",
-      "required": ["intro", "experience", "certifications", "projects", "education", "activities", "contact"],
+      "required": [
+        "intro",
+        "experience",
+        "certifications",
+        "projects",
+        "education",
+        "activities",
+        "contact"
+      ],
       "additionalProperties": false,
       "properties": {
         "intro": {
           "type": "object",
-          "required": ["navLabel"],
-          "properties": { "navLabel": { "type": "string" }, "stageCaption": { "type": "string" } }
+          "required": [
+            "navLabel"
+          ],
+          "properties": {
+            "navLabel": {
+              "type": "string"
+            },
+            "stageCaption": {
+              "type": "string"
+            }
+          }
         },
         "experience": {
-          "allOf": [{ "$ref": "#/definitions/section" }],
-          "properties": { "toolkitTitle": { "type": "string", "description": "Heading above the skills list." } }
+          "allOf": [
+            {
+              "$ref": "#/definitions/section"
+            }
+          ],
+          "properties": {
+            "toolkitTitle": {
+              "type": "string",
+              "description": "Heading above the skills list."
+            }
+          }
         },
-        "certifications": { "$ref": "#/definitions/section" },
-        "projects": { "$ref": "#/definitions/section" },
-        "education": { "$ref": "#/definitions/section" },
-        "activities": { "$ref": "#/definitions/section" },
+        "certifications": {
+          "$ref": "#/definitions/section"
+        },
+        "projects": {
+          "$ref": "#/definitions/section"
+        },
+        "education": {
+          "$ref": "#/definitions/section"
+        },
+        "activities": {
+          "$ref": "#/definitions/section"
+        },
         "contact": {
-          "allOf": [{ "$ref": "#/definitions/section" }],
-          "properties": { "intro": { "type": "string", "description": "Sentence under the contact heading." } }
+          "allOf": [
+            {
+              "$ref": "#/definitions/section"
+            }
+          ],
+          "properties": {
+            "intro": {
+              "type": "string",
+              "description": "Sentence under the contact heading."
+            }
+          }
         }
       }
     },
@@ -88,9 +255,19 @@
       "description": "Shown as the Toolkit list at the end of Experience.",
       "items": {
         "type": "object",
-        "required": ["label", "items"],
+        "required": [
+          "label",
+          "items"
+        ],
         "additionalProperties": false,
-        "properties": { "label": { "type": "string" }, "items": { "$ref": "#/definitions/textList" } }
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "items": {
+            "$ref": "#/definitions/textList"
+          }
+        }
       }
     },
     "experience": {
@@ -99,16 +276,39 @@
       "description": "Newest first. The last entry's start year is used as \"Since …\".",
       "items": {
         "type": "object",
-        "required": ["company", "role", "location", "start", "end", "highlights"],
+        "required": [
+          "company",
+          "role",
+          "location",
+          "start",
+          "end",
+          "highlights"
+        ],
         "additionalProperties": false,
         "properties": {
-          "company": { "type": "string" },
-          "role": { "type": "string" },
-          "location": { "type": "string" },
-          "start": { "type": "string", "description": "e.g. Feb 2023" },
-          "end": { "type": "string", "description": "e.g. Mar 2024, or Present" },
-          "highlights": { "$ref": "#/definitions/textList" },
-          "stack": { "$ref": "#/definitions/textList" }
+          "company": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "start": {
+            "type": "string",
+            "description": "e.g. Feb 2023"
+          },
+          "end": {
+            "type": "string",
+            "description": "e.g. Mar 2024, or Present"
+          },
+          "highlights": {
+            "$ref": "#/definitions/textList"
+          },
+          "stack": {
+            "$ref": "#/definitions/textList"
+          }
         }
       }
     },
@@ -116,15 +316,32 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["name", "issuer", "period"],
+        "required": [
+          "name",
+          "issuer",
+          "period"
+        ],
         "additionalProperties": false,
         "properties": {
-          "name": { "type": "string" },
-          "issuer": { "type": "string" },
-          "period": { "type": "string" },
-          "credentialId": { "type": "string" },
-          "verifyUrl": { "$ref": "#/definitions/optionalUrl" },
-          "featured": { "type": "boolean", "description": "Show this one on the 3D framed certificate." }
+          "name": {
+            "type": "string"
+          },
+          "issuer": {
+            "type": "string"
+          },
+          "period": {
+            "type": "string"
+          },
+          "credentialId": {
+            "type": "string"
+          },
+          "verifyUrl": {
+            "$ref": "#/definitions/optionalUrl"
+          },
+          "featured": {
+            "type": "boolean",
+            "description": "Show this one on the 3D framed certificate."
+          }
         }
       }
     },
@@ -132,27 +349,64 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["name", "context", "role", "summary", "architecture", "challenges"],
+        "required": [
+          "name",
+          "context",
+          "role",
+          "summary",
+          "architecture",
+          "challenges"
+        ],
         "additionalProperties": false,
         "properties": {
-          "name": { "type": "string" },
-          "context": { "type": "string", "description": "e.g. Company · 2023 – present" },
-          "role": { "type": "string" },
-          "summary": { "type": "string" },
-          "architecture": { "$ref": "#/definitions/textList" },
-          "challenges": { "$ref": "#/definitions/textList" },
-          "stack": { "$ref": "#/definitions/textList" },
-          "github": { "$ref": "#/definitions/optionalUrl" },
-          "live": { "$ref": "#/definitions/optionalUrl" },
-          "confidential": { "type": "boolean", "description": "Private client work: shows a note instead of links." },
-          "featured": { "type": "boolean", "description": "Show this project on the 3D laptop." },
+          "name": {
+            "type": "string"
+          },
+          "context": {
+            "type": "string",
+            "description": "e.g. Company · 2023 – present"
+          },
+          "role": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "architecture": {
+            "$ref": "#/definitions/textList"
+          },
+          "challenges": {
+            "$ref": "#/definitions/textList"
+          },
+          "stack": {
+            "$ref": "#/definitions/textList"
+          },
+          "github": {
+            "$ref": "#/definitions/optionalUrl"
+          },
+          "live": {
+            "$ref": "#/definitions/optionalUrl"
+          },
+          "confidential": {
+            "type": "boolean",
+            "description": "Private client work: shows a note instead of links."
+          },
+          "featured": {
+            "type": "boolean",
+            "description": "Show this project on the 3D laptop."
+          },
           "screen": {
             "type": "object",
             "description": "What the 3D laptop screen shows (featured project only).",
             "additionalProperties": false,
             "properties": {
-              "tagline": { "type": "string" },
-              "pipeline": { "$ref": "#/definitions/textList", "description": "Up to 4 short box labels." }
+              "tagline": {
+                "type": "string"
+              },
+              "pipeline": {
+                "$ref": "#/definitions/textList",
+                "description": "Up to 4 short box labels."
+              }
             }
           }
         }
@@ -163,19 +417,41 @@
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["institution", "degree", "location", "period"],
+        "required": [
+          "institution",
+          "degree",
+          "location",
+          "period"
+        ],
         "additionalProperties": false,
         "properties": {
-          "institution": { "type": "string" },
-          "degree": { "type": "string" },
-          "location": { "type": "string" },
-          "period": { "type": "string" },
-          "achievements": { "$ref": "#/definitions/textList" },
+          "institution": {
+            "type": "string"
+          },
+          "degree": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "period": {
+            "type": "string"
+          },
+          "achievements": {
+            "$ref": "#/definitions/textList"
+          },
           "cover": {
             "type": "object",
             "description": "Lettering on the 3D book (first entry only).",
             "additionalProperties": false,
-            "properties": { "title": { "type": "string" }, "subtitle": { "type": "string" } }
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "subtitle": {
+                "type": "string"
+              }
+            }
           }
         }
       }
@@ -184,19 +460,48 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["kind", "title", "organisation", "period", "description"],
+        "required": [
+          "kind",
+          "title",
+          "organisation",
+          "period",
+          "description"
+        ],
         "additionalProperties": false,
         "properties": {
-          "kind": { "enum": ["leadership", "volunteering", "award"] },
-          "title": { "type": "string" },
-          "organisation": { "type": "string" },
-          "period": { "type": "string" },
-          "description": { "type": "string" },
-          "badge": { "type": "string", "description": "2–3 letters in the badge on the 3D phone (first leadership entry)." },
-          "tags": { "$ref": "#/definitions/textList", "description": "Up to 2 words for the pill on the 3D phone." }
+          "kind": {
+            "enum": [
+              "leadership",
+              "volunteering",
+              "award"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "organisation": {
+            "type": "string"
+          },
+          "period": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "badge": {
+            "type": "string",
+            "description": "2–3 letters in the badge on the 3D phone (first leadership entry)."
+          },
+          "tags": {
+            "$ref": "#/definitions/textList",
+            "description": "Up to 2 words for the pill on the 3D phone."
+          }
         }
       }
     },
-    "closingStatement": { "type": "string", "description": "Quote at the end of Activities." }
+    "closingStatement": {
+      "type": "string",
+      "description": "Quote at the end of Activities."
+    }
   }
 }

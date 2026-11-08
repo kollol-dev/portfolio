@@ -1,6 +1,6 @@
 "use client";
 
-import { portfolio } from "@/data/portfolio";
+import { useContent } from "@/content/ContentProvider";
 import { materials, palette3d } from "@/styles/tokens3d";
 import { Dot, Label, Mat, Panel, Plate, ScreenSurface } from "./kit";
 
@@ -11,6 +11,7 @@ const UI = D / 2 + 0.0008;
 
 /** 06 Activities — phone showing a leadership badge. */
 export function Phone() {
+  const portfolio = useContent();
   const act = portfolio.activities.find((a) => a.kind === "leadership") ?? portfolio.activities[0];
   const [title, subtitle] = act.title.split(" & ");
   const years = act.period.replace(/[A-Za-z]+ /g, "").replace("–", "—");

@@ -21,6 +21,9 @@
 /build
 /release
 
+# dashboard content + revisions (runtime data, not source)
+/.data
+
 # misc
 .DS_Store
 *.pem

@@ -1,6 +1,7 @@
 "use client";
 
-import { displayUrl, portfolio } from "@/data/portfolio";
+import { displayUrl } from "@/data/portfolio";
+import { useContent } from "@/content/ContentProvider";
 import { palette3d } from "@/styles/tokens3d";
 import { Label, Mat, Panel, Plate, Rule } from "./kit";
 
@@ -12,6 +13,7 @@ const L = -W / 2 + 0.018; // left text column
 
 /** 01 Intro — professional identity card. */
 export function IdCard() {
+  const portfolio = useContent();
   const { profile } = portfolio;
   const github = profile.socials.find((s) => s.kind === "github");
   return (

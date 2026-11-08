@@ -1,6 +1,7 @@
 "use client";
 
-import { featured, portfolio } from "@/data/portfolio";
+import { featured } from "@/data/portfolio";
+import { useContent } from "@/content/ContentProvider";
 import { palette3d } from "@/styles/tokens3d";
 import { Dot, Label, Mat, Panel, Plate, Rule, ScreenSurface } from "./kit";
 
@@ -18,6 +19,7 @@ const UI = LID_T / 2 + 0.0009;
 
 /** 04 Projects — open laptop showing the featured project's architecture. */
 export function Laptop() {
+  const portfolio = useContent();
   const project = featured(portfolio.projects);
   if (!project) return null;
   const BOXES = project.screen.pipeline;

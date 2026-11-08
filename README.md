@@ -20,6 +20,43 @@ npm run lint
 npx tsc --noEmit
 ```
 
+## Dashboard & blog (`/admin`)
+
+A password-protected dashboard for editing the home page, writing blog articles and managing SEO.
+Changes go live immediately, with no rebuild.
+
+**Set up login** (once):
+
+```bash
+npm run admin:setup            # prints ADMIN_USERNAME, ADMIN_PASSWORD_HASH, SESSION_SECRET
+npm run admin:setup -- --write # also saves them to .env.local for local use
+```
+
+On Hostinger, add those three values plus `CONTENT_DATA_DIR` (a folder **outside** the app, e.g.
+`/home/USER/portfolio-data`) under your Node.js app → Environment variables. Variables set there apply to
+both the build and the running site, so dashboard edits survive redeploys.
+
+**Home page:** Dashboard → Home page → Profile, Experience, Projects… Every field is editable, with
+version history and one-click restore. *Home page SEO* gives a Rank Math-style score for the home page.
+
+**Blog:** Dashboard → Blog → *New post*.
+
+- Write in Markdown with the toolbar (headings, lists, quotes, code, tables, images) and a live preview.
+- **Internal links (inbound):** select text → *Link* (⌘K) → *Internal* → pick a post or home page section.
+  The *Links* panel also suggests internal links based on other posts' keywords.
+- **External links (outbound):** *Link* → *External* → URL, with optional `nofollow` or `sponsored`.
+  They open in a new tab with `rel="noopener noreferrer"`. You can also type `[text](url){nofollow}` by hand.
+- **Per-article SEO:** focus and secondary keywords, SEO title (pixel meter), meta description, slug,
+  canonical and noindex. A live score out of 100 comes from 24 checks, alongside a Google preview.
+- **Published pages include:** breadcrumbs, a single H1, Published/Updated dates, reading time, a table of
+  contents, FAQ, an author box, "Continue reading", and structured data (BlogPosting, BreadcrumbList,
+  FAQPage). Articles also get a share image, an RSS feed (`/blog/rss.xml`), sitemap entries and `/llms.txt`.
+- **Scheduling:** set a future publish date and click *Schedule*. Drafts and scheduled posts return a real 404.
+- **Images:** uploads up to 5 MB (JPG/PNG/WebP/AVIF/GIF) are stored in the data folder and served from `/media/…`.
+
+**Data:** home page content, posts (`blog.json`), images (`media/`) and backups (`revisions/`) all live in
+the data folder. Use *Settings → Download backup* before risky changes.
+
 ## Editing content
 
 **All content lives in [`content/portfolio.json`](content/portfolio.json):** profile, ID card photo,
@@ -40,7 +77,7 @@ from it.
 
 | You want to change… | Edit |
 |---|---|
-| Any text, role, project, link, heading | `content/portfolio.json` |
+| Any text, role, project, link, heading | Dashboard → Home page (or `content/portfolio.json` before first save) |
 | ID card photo | Put the image in `public/images/` and set `profile.photo` |
 | Section order, which prop each section shows | `src/config/sections.ts` |
 | Colours, type scale, spacing | `src/app/globals.css` (Tailwind v4 `@theme`) |

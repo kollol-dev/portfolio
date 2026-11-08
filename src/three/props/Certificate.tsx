@@ -1,6 +1,7 @@
 "use client";
 
-import { featured, portfolio } from "@/data/portfolio";
+import { featured } from "@/data/portfolio";
+import { useContent } from "@/content/ContentProvider";
 import { materials } from "@/styles/tokens3d";
 import { Label, Mat, Panel, Plate, Rule } from "./kit";
 
@@ -15,6 +16,7 @@ const INK_SOFT = "#5a554c";
 
 /** 03 Certifications — framed certificate. */
 export function Certificate() {
+  const portfolio = useContent();
   const cert = featured(portfolio.certifications);
   if (!cert) return null;
   const recipient = `${portfolio.profile.firstName[0]}. ${portfolio.profile.lastName}`.toUpperCase();

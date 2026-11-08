@@ -1,11 +1,10 @@
 import type { ReactNode } from "react";
-import type { SectionId } from "@/config/sections";
-import { SECTIONS } from "@/config/sections";
+import type { SectionMeta } from "@/config/sections";
 import { Reveal } from "./Reveal";
 import { Emphasis } from "./Emphasis";
 
 interface SectionProps {
-  id: SectionId;
+  meta: SectionMeta;
   children: ReactNode;
   className?: string;
 }
@@ -16,8 +15,8 @@ interface SectionProps {
  * `data-section` is what the scroll observer (Phase 6) will watch.
  */
 /** Eyebrow and heading come from content/portfolio.json → "sections". */
-export function Section({ id, children, className = "" }: SectionProps) {
-  const meta = SECTIONS.find((s) => s.id === id);
+export function Section({ meta, children, className = "" }: SectionProps) {
+  const { id } = meta;
   const headingId = `${id}-heading`;
   return (
     <section
@@ -29,12 +28,12 @@ export function Section({ id, children, className = "" }: SectionProps) {
       <div className="max-w-(--content-max)">
         <Reveal>
           <p className="eyebrow flex items-center gap-3">
-            <span className="text-accent">{meta?.index}</span>
+            <span className="text-accent">{meta.index}</span>
             <span aria-hidden className="h-px w-8 bg-line-strong" />
-            {meta?.eyebrow}
+            {meta.eyebrow}
           </p>
           <h2 id={headingId} className="mt-6 font-display text-h2 text-balance text-text">
-            <Emphasis text={meta?.title ?? ""} />
+            <Emphasis text={meta.title} />
           </h2>
         </Reveal>
         <div className="mt-12">{children}</div>

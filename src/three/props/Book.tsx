@@ -1,6 +1,6 @@
 "use client";
 
-import { portfolio } from "@/data/portfolio";
+import { useContent } from "@/content/ContentProvider";
 import { materials, palette3d } from "@/styles/tokens3d";
 import { Label, Mat, Plate, Rule } from "./kit";
 
@@ -13,6 +13,7 @@ const FOIL = palette3d.accent;
 
 /** 05 Education — clothbound hardcover with foil lettering. */
 export function Book() {
+  const portfolio = useContent();
   const edu = portfolio.education[0];
   const [startYear, endYear] = edu.period.match(/\d{4}/g) ?? ["", ""];
   return (
