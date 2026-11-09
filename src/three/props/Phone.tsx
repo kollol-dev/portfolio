@@ -26,7 +26,7 @@ export function Phone() {
       </Panel>
       <ScreenSurface w={W - 0.008} h={H - 0.01} r={0.009} z={D / 2 + 0.0004} />
       <Panel w={0.018} h={0.005} r={0.0025} position={[0, H / 2 - 0.009, D / 2 + 0.0006]}>
-        <meshBasicMaterial color="#050506" toneMapped={false} />
+        <meshBasicMaterial color="#05070b" toneMapped={false} />
       </Panel>
 
       <Label
@@ -44,8 +44,8 @@ export function Phone() {
         <ringGeometry args={[0.0165, 0.018, 64]} />
         <meshBasicMaterial color={palette3d.accent} toneMapped={false} />
       </mesh>
-      <Dot position={[0, 0.026, UI - 0.0001]} r={0.0165} color="#16161b" />
-      <Label position={[0, 0.0265, UI + 0.0001]} size={0.0145} font="serif" color={palette3d.accent} anchorX="center">
+      <Dot position={[0, 0.026, UI - 0.0001]} r={0.0165} color="#151b25" />
+      <Label position={[0, 0.0265, UI + 0.0001]} size={0.0138} font="display" letterSpacing={-0.02} color={palette3d.accent} anchorX="center">
         {act.badge}
       </Label>
       <Label
@@ -91,7 +91,7 @@ export function Phone() {
       {act.tags.length ? (
         <>
           <Panel w={0.058} h={0.011} r={0.0055} position={[0, -0.062, UI - 0.0001]}>
-            <meshBasicMaterial color="#1d1d23" toneMapped={false} />
+            <meshBasicMaterial color="#1b2230" toneMapped={false} />
           </Panel>
           <Label
             position={[0, -0.062, UI]}

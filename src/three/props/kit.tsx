@@ -11,13 +11,17 @@ import { detail, useQuality } from "../quality";
 
 // Local WOFF files (troika can't read WOFF2); no CDN request at runtime.
 export const FONTS = {
-  sans: "/fonts/geist-sans-latin-400-normal.woff",
-  sansMedium: "/fonts/geist-sans-latin-500-normal.woff",
-  sansSemi: "/fonts/geist-sans-latin-600-normal.woff",
+  /** Space Grotesk — interface text on screens and cards. */
+  sans: "/fonts/space-grotesk-latin-400-normal.woff",
+  sansMedium: "/fonts/space-grotesk-latin-500-normal.woff",
+  sansSemi: "/fonts/space-grotesk-latin-600-normal.woff",
+  /** Space Grotesk 500 — headings (names, project titles). */
+  display: "/fonts/space-grotesk-latin-500-normal.woff",
   mono: "/fonts/geist-mono-latin-400-normal.woff",
   monoMedium: "/fonts/geist-mono-latin-500-normal.woff",
-  serif: "/fonts/instrument-serif-latin-400-normal.woff",
-  serifItalic: "/fonts/instrument-serif-latin-400-italic.woff",
+  /** Bodoni Moda — printed objects only (certificate, book cover). */
+  serif: "/fonts/bodoni-moda-latin-400-normal.woff",
+  serifItalic: "/fonts/bodoni-moda-latin-400-italic.woff",
 } as const;
 
 type FontKey = keyof typeof FONTS;

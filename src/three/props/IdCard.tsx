@@ -35,13 +35,13 @@ export function IdCard() {
       >
         Identity
       </Label>
-      <Label position={[L, 0.009, Z]} size={0.0135} font="serif">
+      <Label position={[L, 0.009, Z]} size={0.0128} font="display" letterSpacing={-0.02}>
         {profile.name}
       </Label>
       <Label position={[L, -0.0075, Z]} size={0.0062} color={palette3d.textMuted}>
         {profile.title}
       </Label>
-      <Rule from={[L, -0.0205]} to={[W / 2 - 0.012, -0.0205]} z={Z} color="#2c2c33" />
+      <Rule from={[L, -0.0205]} to={[W / 2 - 0.012, -0.0205]} z={Z} color="#2a3444" />
       <Label
         position={[L, -0.0305, Z]}
         size={0.0041}
@@ -62,15 +62,15 @@ export function IdCard() {
         {github ? displayUrl(github.href) : profile.email}
       </Label>
 
-      {/* Brass monogram chip */}
+      {/* Steel monogram chip */}
       <Plate size={[0.022, 0.022, 0.0014]} radius={0.003} position={[W / 2 - 0.021, H / 2 - 0.021, D / 2 + 0.0007]}>
-        <Mat kind="brass" />
+        <Mat kind="steel" />
       </Plate>
       <Label
         position={[W / 2 - 0.021, H / 2 - 0.021, D / 2 + 0.0016]}
         size={0.0074}
         font="monoMedium"
-        color="#1a1408"
+        color="#10151e"
         anchorX="center"
       >
         KC

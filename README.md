@@ -66,7 +66,7 @@ from it.
 
 - Open it in VS Code. The `"$schema"` line gives autocomplete, field descriptions and red underlines
   for mistakes (from `content/portfolio.schema.json`).
-- In section titles, wrap a word in `*asterisks*` for the brass italic accent: `"Selected *work*."`
+- In section titles, wrap a word in `*asterisks*` for the Steel Blue Bodoni italic accent: `"Selected *work*."`
 - Text starting with `[PLACEHOLDER]` shows as a dashed **TBD** box. Replace it with real text.
 - Optional links (`github`, `live`, `verifyUrl`) can be `""` until you have them.
 - `"featured": true` chooses which project appears on the 3D laptop and which certificate is framed.
@@ -80,8 +80,7 @@ from it.
 | Any text, role, project, link, heading | Dashboard → Home page (or `content/portfolio.json` before first save) |
 | ID card photo | Put the image in `public/images/` and set `profile.photo` |
 | Section order, which prop each section shows | `src/config/sections.ts` |
-| Colours, type scale, spacing | `src/app/globals.css` (Tailwind v4 `@theme`) |
-| 3D lighting, materials, camera, timing | `src/styles/tokens3d.ts` |
+| All design tokens (colour, type, spacing, motion, 3D materials, camera) | `src/styles/tokens3d.ts`, then run `npm run tokens` to regenerate `src/styles/tokens.css` |
 | Where a prop sits in the hand | `src/three/props/registry.ts` (`offset`, `tilt`, `scale`) |
 
 ## Environment variables
@@ -141,7 +140,7 @@ Git repository in hPanel.
 | `public/resume.pdf` | Linked from the nav, hero and contact section. Replace it to update. |
 | `public/images/portrait.webp` | ID card photo (480×600 WebP, cropped from the Avaturn render). |
 | `public/models/avatar.glb` | Avaturn export, **compressed** (4.2 MB → 1.1 MB, meshopt + WebP). |
-| `public/fonts/*.woff` | Subset Geist, Geist Mono and Instrument Serif for 3D text (OFL licences included). |
+| `public/fonts/*.woff` | Space Grotesk, Bodoni Moda and Geist Mono for 3D text and share images (OFL licences included). |
 
 ### Replacing the avatar
 

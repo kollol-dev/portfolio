@@ -45,7 +45,7 @@ export function IdBadge() {
   };
 
   return (
-    <figure className="badge-sway relative w-56 shrink-0" aria-label={`${profile.name} — identity card`}>
+    <figure className="badge-hang relative w-56 shrink-0" aria-label={`${profile.name} — identity card`}>
       {/* Lanyard */}
       <div aria-hidden className="flex flex-col items-center">
         <div className="lanyard-strap h-16 w-[22px]">
@@ -68,7 +68,7 @@ export function IdBadge() {
           {/* Front */}
           <Face>
             <div className="mt-2.5 flex items-center justify-between">
-              <span className="grid size-6 place-items-center rounded-xs bg-[linear-gradient(135deg,#e0c39a,#a8875c)] font-mono text-[0.625rem] font-medium text-[#1a1408]">
+              <span className="grid size-6 place-items-center rounded-xs bg-[linear-gradient(135deg,#c4d3e5,#8fa9c9)] font-mono text-[0.625rem] font-medium text-bg">
                 KC
               </span>
               <span className="eyebrow text-[0.625rem]">Identity</span>
@@ -115,7 +115,7 @@ export function IdBadge() {
                 <span className="text-accent">Contact</span>
               </p>
               <p className="mt-2 font-display text-[1.375rem] leading-tight text-text">
-                Let&rsquo;s <em className="text-accent">talk</em>.
+                Let&rsquo;s <em className="editorial text-accent">talk</em>.
               </p>
 
               <dl className="mt-4 space-y-3 text-caption">
@@ -125,7 +125,7 @@ export function IdBadge() {
                     <a
                       href={`mailto:${profile.email}`}
                       onClick={(e) => e.stopPropagation()}
-                      className="break-all text-text underline decoration-line-strong underline-offset-4 hover:text-accent-strong hover:decoration-accent"
+                      className="inline-block min-h-6 py-0.5 break-all text-text underline decoration-line-strong underline-offset-4 hover:text-accent-strong hover:decoration-accent"
                     >
                       {profile.email}
                     </a>

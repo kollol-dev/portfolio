@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { color, palette } from "@/styles/tokens3d";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { displayUrl } from "@/data/portfolio";
@@ -9,10 +10,9 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 const font = (file: string) => readFile(join(process.cwd(), "public/fonts", file));
-const [serif, serifItalic, sans, mono] = await Promise.all([
-  font("instrument-serif-latin-400-normal.woff"),
-  font("instrument-serif-latin-400-italic.woff"),
-  font("geist-sans-latin-400-normal.woff"),
+const [serifItalic, sans, mono] = await Promise.all([
+  font("bodoni-moda-latin-400-italic.woff"),
+  font("space-grotesk-latin-500-normal.woff"),
   font("geist-mono-latin-400-normal.woff"),
 ]);
 
@@ -30,9 +30,9 @@ export default async function Image() {
           flexDirection: "column",
           justifyContent: "space-between",
           padding: "72px 80px",
-          background: "radial-gradient(ellipse 70% 80% at 85% 40%, #17171b 0%, #0a0a0c 70%)",
-          color: "#ededef",
-          fontFamily: "Geist",
+          background: `radial-gradient(ellipse 70% 80% at 85% 40%, ${palette.slateBlue} 0%, ${color.bg} 70%)`,
+          color: color.text,
+          fontFamily: "Space Grotesk",
         }}
       >
         <div
@@ -42,7 +42,7 @@ export default async function Image() {
             gap: 20,
             fontFamily: "Geist Mono",
             fontSize: 22,
-            color: "#8a8a93",
+            color: color.textMuted,
             letterSpacing: 3,
           }}
         >
@@ -53,9 +53,9 @@ export default async function Image() {
               justifyContent: "center",
               width: 52,
               height: 52,
-              border: "1px solid rgba(255,255,255,0.14)",
+              border: `1px solid ${color.lineStrong}`,
               borderRadius: 4,
-              color: "#c8a97e",
+              color: color.accent,
             }}
           >
             KC
@@ -64,32 +64,32 @@ export default async function Image() {
         </div>
 
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <div style={{ fontFamily: "Instrument Serif", fontSize: 128, lineHeight: 0.95, letterSpacing: -3 }}>
+          <div style={{ fontSize: 128, lineHeight: 0.95, letterSpacing: -6 }}>
             {profile.firstName}
           </div>
           <div
             style={{
-              fontFamily: "Instrument Serif Italic",
-              fontSize: 128,
+              fontFamily: "Bodoni Moda Italic",
+              fontSize: 132,
               lineHeight: 1,
-              letterSpacing: -3,
-              color: "#c8a97e",
+              letterSpacing: -1,
+              color: color.accent,
             }}
           >
             {profile.lastName}
           </div>
-          <div style={{ marginTop: 32, fontSize: 34, color: "#9a9aa3" }}>{profile.headline}</div>
+          <div style={{ marginTop: 32, fontSize: 34, color: color.textMuted }}>{profile.headline}</div>
         </div>
 
         <div
           style={{
             display: "flex",
             justifyContent: "space-between",
-            borderTop: "1px solid rgba(255,255,255,0.08)",
+            borderTop: `1px solid ${color.line}`,
             paddingTop: 28,
             fontFamily: "Geist Mono",
             fontSize: 20,
-            color: "#8a8a93",
+            color: color.textMuted,
             letterSpacing: 2,
           }}
         >
@@ -101,9 +101,8 @@ export default async function Image() {
     {
       ...size,
       fonts: [
-        { name: "Instrument Serif", data: serif, style: "normal", weight: 400 },
-        { name: "Instrument Serif Italic", data: serifItalic, style: "normal", weight: 400 },
-        { name: "Geist", data: sans, style: "normal", weight: 400 },
+        { name: "Bodoni Moda Italic", data: serifItalic, style: "normal", weight: 400 },
+        { name: "Space Grotesk", data: sans, style: "normal", weight: 500 },
         { name: "Geist Mono", data: mono, style: "normal", weight: 400 },
       ],
     },

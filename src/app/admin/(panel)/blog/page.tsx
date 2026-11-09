@@ -31,7 +31,7 @@ export default async function BlogAdmin() {
         <form action={createPost}>
           <button
             type="submit"
-            className="inline-flex min-h-10 items-center gap-2 rounded-sm bg-accent px-4 text-caption font-medium text-[#1a1408] hover:bg-accent-strong"
+            className="inline-flex min-h-10 items-center gap-2 rounded-sm bg-accent px-4 text-caption font-medium text-bg hover:bg-accent-strong"
           >
             <Plus className="size-4" aria-hidden /> New post
           </button>

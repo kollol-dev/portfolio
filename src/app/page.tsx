@@ -89,8 +89,8 @@ export default async function Home() {
       <StageFrame>
         <SceneMount />
       </StageFrame>
-      {/* Left editorial column; the right half belongs to the fixed stage on desktop. */}
-      <div className="px-(--gutter) pt-(--stage-h) lg:w-1/2 lg:pr-[clamp(2rem,4vw,5rem)]">
+      {/* Editorial column (--column-w of the viewport); the fixed stage takes the rest on desktop. */}
+      <div className="px-(--gutter) pt-(--stage-h) lg:w-(--column-w) lg:pr-[clamp(2rem,4vw,5rem)]">
         <main id="main" tabIndex={-1} className="outline-none">
           <IntroSection content={content} />
           <ExperienceSection content={content} />

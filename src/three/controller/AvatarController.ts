@@ -1,7 +1,7 @@
 import { Quaternion, Vector3, type Bone } from "three";
 import type { Object3D } from "three";
 import type { PropId } from "@/config/sections";
-import { motion3d } from "@/styles/tokens3d";
+import { dampFactor, ease, motion3d } from "@/styles/tokens3d";
 import type { ResolvedRig } from "../avatar/rigConfig";
 import { createPoseContext, POSES, solvePose, tipChild, type PoseContext, type PoseSnapshot } from "./poses";
 
@@ -13,8 +13,15 @@ const LOWERED = 0.4;
 const PROP_IN_AT = 0.55;
 
 const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
+/*
+ * Motion mapping (see tokens3d D):
+ * - Arm reach: symmetric in-out cubic — a limb accelerates and decelerates;
+ *   the same curve serves both reach and retract.
+ * - Prop scale-in: the page's editorial curve (cubic-bezier(0.16, 1, 0.3, 1),
+ *   evaluated exactly), so a prop arrives the way text reveals do.
+ * - Bone follow: exponential damping (continuous, retargetable).
+ */
 const easeInOutCubic = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
-const easeOutCubic = (t: number) => 1 - (1 - t) ** 3;
 
 interface Additive {
   bone: Bone;
@@ -138,8 +145,8 @@ export class AvatarController {
   update(dt: number, elapsed: number) {
     this.step(dt);
     this.reachWeight = easeInOutCubic(this.reach);
-    this.propScale = easeOutCubic(this.prop);
-    const smoothing = this.reducedMotion ? 1 : 1 - Math.exp(-motion3d.damping * 2.5 * dt);
+    this.propScale = ease.editorial(this.prop);
+    const smoothing = this.reducedMotion ? 1 : dampFactor(motion3d.damping * 2.5, dt);
     this.applyArm(smoothing);
     this.applyAdditive(elapsed);
     this.afterUpdate.forEach((fn) => fn(dt));

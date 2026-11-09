@@ -9,9 +9,11 @@
     "dev": "next dev",
     "build": "next build --webpack",
     "start": "next start",
-    "lint": "eslint",
+    "lint": "npm run tokens:check && eslint",
     "package": "bash scripts/package.sh",
-    "admin:setup": "node scripts/admin-setup.mjs"
+    "admin:setup": "node scripts/admin-setup.mjs",
+    "tokens": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/tokens.mjs",
+    "tokens:check": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/tokens.mjs --check"
   },
   "dependencies": {
     "@next/swc-wasm-nodejs": "16.4.5",

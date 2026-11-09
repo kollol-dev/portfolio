@@ -5,11 +5,10 @@ import { useEffect, useState, useSyncExternalStore } from "react";
 import { useStageStore } from "@/lib/stageStore";
 import { SceneErrorBoundary } from "./SceneErrorBoundary";
 import { WebGLFallback } from "./WebGLFallback";
+import { DESKTOP_QUERY } from "@/styles/tokens3d";
 
 // three / R3F / drei only load in the browser, in their own chunk.
 const Scene = dynamic(() => import("./Scene"), { ssr: false });
-
-const DESKTOP_QUERY = "(min-width: 64rem)";
 
 let webglSupport: boolean | undefined;
 function hasWebGL(): boolean {

@@ -60,7 +60,7 @@ export function Card({
 
 type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
 const buttonStyles: Record<ButtonVariant, string> = {
-  primary: "bg-accent text-[#1a1408] hover:bg-accent-strong disabled:opacity-50",
+  primary: "bg-accent text-bg hover:bg-accent-strong disabled:opacity-50",
   secondary: "border border-line-strong text-text hover:border-accent hover:text-accent-strong disabled:opacity-50",
   ghost: "text-text-muted hover:bg-elevated hover:text-text disabled:opacity-40",
   danger: "text-[#f0a3a3] hover:bg-[#3a1717]",
@@ -252,7 +252,7 @@ export function ScoreRing({ score, size = 72, label = true }: { score: number; s
 export function ScorePill({ score }: { score: number }) {
   return (
     <span
-      className="inline-flex min-w-9 justify-center rounded-full px-1.5 py-0.5 font-mono text-[0.625rem] font-medium text-[#0a0a0c]"
+      className="inline-flex min-w-9 justify-center rounded-full px-1.5 py-0.5 font-mono text-[0.625rem] font-medium text-bg"
       style={{ background: ratingColor(score) }}
     >
       {score}

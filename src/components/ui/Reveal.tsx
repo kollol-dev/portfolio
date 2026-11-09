@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { m, useReducedMotion, type Variants } from "motion/react";
+import { transition } from "@/styles/tokens3d";
 
 /*
  * Three states instead of the usual "start hidden":
@@ -12,11 +13,11 @@ import { m, useReducedMotion, type Variants } from "motion/react";
  */
 const variants: Variants = {
   idle: { opacity: 1, y: 0 },
-  hidden: { opacity: 0, y: 18, transition: { duration: 0 } },
+  hidden: { opacity: 0, y: transition.reveal.distance, transition: { duration: 0 } },
   shown: (delay: number) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1], delay },
+    transition: { duration: transition.reveal.duration, ease: transition.reveal.ease, delay },
   }),
 };
 

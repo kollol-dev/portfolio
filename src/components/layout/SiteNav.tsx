@@ -36,7 +36,7 @@ export function SiteNav() {
   }, [open]);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-line bg-bg/80 backdrop-blur-md supports-[backdrop-filter]:bg-bg/70">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-line bg-bg">
       <nav aria-label="Primary" className="mx-auto flex h-(--nav-h) items-center justify-between gap-6 px-(--gutter)">
         <a href="#intro" className="flex min-h-11 items-center gap-3 text-caption font-medium tracking-tight text-text">
           <span
@@ -45,11 +45,12 @@ export function SiteNav() {
           >
             KC
           </span>
-          {/* Visually hidden on phones but still the link's accessible name */}
-          <span className="max-sm:sr-only">{profile.name}</span>
+          {/* Visually hidden on phones and on narrow desktops (where the section links need the room),
+              but always the link's accessible name */}
+          <span className="whitespace-nowrap max-sm:sr-only lg:max-xl:sr-only">{profile.name}</span>
         </a>
 
-        <ul className="hidden items-center gap-1 lg:flex">
+        <ul className="hidden items-center lg:flex xl:gap-1">
           {links.map((s) => {
             const current = s.id === active;
             return (
@@ -57,7 +58,7 @@ export function SiteNav() {
                 <a
                   href={`#${s.id}`}
                   aria-current={current ? "location" : undefined}
-                  className={`relative flex min-h-11 items-center gap-1.5 rounded-sm px-3 text-caption transition-colors duration-(--dur-base) hover:text-text ${
+                  className={`relative flex min-h-11 items-center gap-1.5 rounded-sm px-2 text-caption xl:px-3 transition-colors duration-(--dur-base) hover:text-text ${
                     current ? "text-text" : "text-text-muted"
                   }`}
                 >
@@ -71,7 +72,7 @@ export function SiteNav() {
                   {s.navLabel}
                   <span
                     aria-hidden
-                    className={`absolute inset-x-3 bottom-2 h-px origin-left bg-accent transition-transform duration-(--dur-slow) ease-out-expo ${
+                    className={`absolute inset-x-2 bottom-2 h-px xl:inset-x-3 origin-left bg-accent transition-transform duration-(--dur-slow) ease-editorial ${
                       current ? "scale-x-100" : "scale-x-0"
                     }`}
                   />
@@ -83,7 +84,7 @@ export function SiteNav() {
             <li>
               <Link
                 href="/blog"
-                className="flex min-h-11 items-center rounded-sm px-3 text-caption text-text-muted transition-colors duration-(--dur-base) hover:text-text"
+                className="flex min-h-11 items-center rounded-sm px-2 text-caption text-text-muted transition-colors duration-(--dur-base) hover:text-text xl:px-3"
               >
                 Blog
               </Link>

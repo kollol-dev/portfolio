@@ -101,7 +101,7 @@ export function logSkeletonReport(report: SkeletonReport) {
   const status = report.armReady ? "✓ arm rig ready" : `✗ missing: ${report.missingRequired.join(", ")}`;
   console.groupCollapsed(
     `%c[avatar] ${report.boneCount} bones · ${report.skinnedMeshes.length} skinned meshes · ${status}`,
-    "color:#c8a97e",
+    "color:#8fa9c9",
   );
   console.log("Bounds (m):", report.bounds);
   console.log("Animations:", report.animations.length ? report.animations : "none");

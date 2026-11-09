@@ -112,7 +112,7 @@ export interface SectionCopy {
   navLabel: string;
   /** Small label above the heading. */
   eyebrow: string;
-  /** Heading; wrap words in *asterisks* for the brass italic accent. */
+  /** Heading; wrap words in *asterisks* for the Steel Blue serif accent. */
   title: string;
   /** Caption on the 3D stage while this section's prop is shown. */
   stageCaption: string | null;

@@ -132,7 +132,7 @@ export function GooglePreview({
   return (
     <div className={`rounded-md bg-white p-4 font-[Arial,sans-serif] ${mobile ? "max-w-[380px]" : "max-w-[600px]"}`}>
       <div className="flex items-center gap-2.5">
-        <span className="grid size-7 place-items-center rounded-full bg-[#f1f3f4] font-mono text-[10px] font-bold text-[#a8875c]">
+        <span className="grid size-7 place-items-center rounded-full bg-[#f1f3f4] font-mono text-[10px] font-bold text-[#5a7aa3]">
           KC
         </span>
         <div className="leading-tight">

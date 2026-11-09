@@ -8,6 +8,7 @@ import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 import { useScrollStore } from "@/lib/scrollStore";
 import { AvatarController } from "../controller/AvatarController";
 import type { RigResolution } from "./rigConfig";
+import { hexToNumber, palette3d } from "@/styles/tokens3d";
 
 declare global {
   interface Window {
@@ -66,7 +67,7 @@ export function AvatarAnimator({ rig, root, onController }: Props) {
   }, [debug, controller]);
 
   const arrow = useMemo(
-    () => (debug ? new ArrowHelper(new Vector3(0, 1, 0), new Vector3(), 0.15, 0xc8a97e, 0.04, 0.025) : null),
+    () => (debug ? new ArrowHelper(new Vector3(0, 1, 0), new Vector3(), 0.15, hexToNumber(palette3d.accent), 0.04, 0.025) : null),
     [debug],
   );
   useEffect(() => () => arrow?.dispose(), [arrow]);

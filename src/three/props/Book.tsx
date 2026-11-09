@@ -25,7 +25,7 @@ export function Book() {
         <Mat kind="cloth" />
       </Plate>
       <Plate size={[0.009, H, D]} radius={0.003} bevel={0.3} position={[-W / 2 + 0.0045, 0, 0]}>
-        <Mat kind="cloth" color="#141418" />
+        <Mat kind="cloth" color="#121821" />
       </Plate>
       {/* Page block */}
       <mesh position={[0.002, 0, 0]}>

@@ -27,7 +27,7 @@ export function Tablet() {
         <meshPhysicalMaterial {...materials.glass} />
       </Panel>
       <ScreenSurface w={W - 0.026} h={H - 0.026} r={0.004} z={D / 2 + 0.0004} />
-      <Dot position={[0, H / 2 - 0.0075, D / 2 + 0.0005]} r={0.0013} color="#26262c" />
+      <Dot position={[0, H / 2 - 0.0075, D / 2 + 0.0005]} r={0.0013} color="#232a36" />
 
       <Label
         position={[-0.105, 0.062, UI]}
@@ -49,19 +49,19 @@ export function Tablet() {
       >
         {`${careerStartYear(portfolio) ?? ""} — PRESENT`}
       </Label>
-      <Rule from={[-0.105, 0.051]} to={[0.105, 0.051]} z={UI} color="#2a2a31" />
+      <Rule from={[-0.105, 0.051]} to={[0.105, 0.051]} z={UI} color="#262e3a" />
 
       <Rule
         from={[-0.098, top + 0.004]}
         to={[-0.098, top - step * (roles.length - 1) - 0.004]}
         z={UI}
-        color="#33333b"
+        color="#323c4b"
       />
       {roles.map((r, i) => {
         const y = top - i * step;
         return (
           <group key={r.company}>
-            <Dot position={[-0.098, y, UI + 0.0001]} r={0.0018} color={i === 0 ? palette3d.accent : "#55555e"} />
+            <Dot position={[-0.098, y, UI + 0.0001]} r={0.0018} color={i === 0 ? palette3d.accent : "#5a6473"} />
             <Label position={[-0.09, y, UI]} size={0.0048} font="mono" color={palette3d.textMuted}>
               {years(r.start, r.end)}
             </Label>

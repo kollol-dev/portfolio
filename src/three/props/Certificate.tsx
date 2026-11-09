@@ -11,8 +11,8 @@ const D = 0.014;
 const OPEN = { w: 0.172, h: 0.122, r: 0.002 };
 const PAPER_Z = -D / 2 + 0.0035;
 const T = PAPER_Z + 0.0003;
-const INK = "#1f1d1a";
-const INK_SOFT = "#5a554c";
+const INK = "#141a24";
+const INK_SOFT = "#4f5967";
 
 /** 03 Certifications — framed certificate. */
 export function Certificate() {
@@ -22,7 +22,7 @@ export function Certificate() {
   const recipient = `${portfolio.profile.firstName[0]}. ${portfolio.profile.lastName}`.toUpperCase();
   return (
     <group position={[0, H / 2, 0]}>
-      {/* Black frame with a thin brass inner lip */}
+      {/* Black frame with a thin steel inner lip */}
       <Plate size={[W, H, D]} radius={0.004} bevel={0.2} hole={OPEN}>
         <Mat kind="bezel" />
       </Plate>
@@ -33,7 +33,7 @@ export function Certificate() {
         hole={OPEN}
         position={[0, 0, -D / 2 + 0.0055]}
       >
-        <Mat kind="brass" />
+        <Mat kind="steel" />
       </Plate>
       {/* Backing board and paper */}
       <Plate size={[W - 0.004, H - 0.004, 0.002]} radius={0.003} position={[0, 0, -D / 2 + 0.001]}>
@@ -54,7 +54,7 @@ export function Certificate() {
       >
         Certificate
       </Label>
-      <Rule from={[-0.018, 0.034]} to={[0.018, 0.034]} z={T} color="#b39467" width={0.0005} />
+      <Rule from={[-0.018, 0.034]} to={[0.018, 0.034]} z={T} color="#7d93ae" width={0.0005} />
       <Label
         position={[0, 0.016, T]}
         size={0.0112}
@@ -89,11 +89,11 @@ export function Certificate() {
       <mesh position={[0.06, -0.038, T + 0.0009]} rotation={[Math.PI / 2, 0, 0]}>
         <cylinderGeometry args={[0.012, 0.012, 0.0016, 40]} />
         {/* Less metallic than the frame lip so it reads as foil, not a dark mirror */}
-        <meshStandardMaterial color="#c8a97e" metalness={0.55} roughness={0.38} />
+        <meshStandardMaterial color="#8fa9c9" metalness={0.55} roughness={0.38} />
       </mesh>
       <mesh position={[0.06, -0.038, T + 0.0018]}>
         <ringGeometry args={[0.0085, 0.0092, 40]} />
-        <meshStandardMaterial color="#8c7350" metalness={1} roughness={0.4} />
+        <meshStandardMaterial color="#5f7690" metalness={1} roughness={0.4} />
       </mesh>
     </group>
   );

@@ -8,11 +8,21 @@ and hands each chapter to the viewer as a physical object.
 
 - **Tone:** calm, exact, confident. Like an Apple keynote slide or an industrial design
   monograph, not a game HUD.
-- **Palette:** near-black surfaces (`#0A0A0C`, `#111114`, `#17171B`), 1px white hairlines
-  at 8–14% opacity, warm brass accent (`#C8A97E`) used sparingly for links, active
-  markers and focus, cool steel (`#8FA3B8`) for meta and data.
-- **Type:** *Instrument Serif* for display headlines (with italic emphasis), *Geist* for
-  body, *Geist Mono* for small uppercase eyebrow labels, dates and tech tags.
+- **Identity:** MIDNIGHT BLUE, quiet experimental minimalism (Swiss typography ×
+  editorial contrast). Less visual noise, more visual intelligence.
+- **Palette:** Midnight Navy `#10151E` background, Slate Blue `#222C3B` surfaces,
+  Deep Slate `#303A49` for hover/elevated chrome (never behind small text), Muted
+  Shadow `#080B11` insets. Silver Mist `#DCE3ED` text (14.2:1), Cool Grey `#929BA8`
+  secondary text (6.5:1 on bg, 5.0:1 on surface). One accent, Steel Blue `#8FA9C9`
+  (7.6:1), used sparingly for active states, links and focus; Pure White for hover
+  highlights. 1px Silver Mist hairlines at 9–16% opacity. 3D materials are graphite and
+  brushed steel with neutral lighting.
+- **Type:** *Space Grotesk* for headings, interface and body (500 weight, tight
+  tracking at display sizes). *Bodoni Moda* italic is the rare editorial contrast: the
+  `*accent*` word in headings, the hero surname, pull quotes and printed 3D objects,
+  always via the `.editorial` class. *Geist Mono* for eyebrow labels, dates and tags.
+  Fluid `clamp()` scale (`typeScale` in `tokens3d.ts`): display 46→112px, h2 34→64px, h3 20→28px,
+  body 15–17px, metadata 11–13px.
 - **Layout:** numbered chapters (`01`–`07`), lots of negative space, one idea per
   screen. A 38rem text measure on the left; the canvas fills the right 50–55% from
   `lg` (1024px) up.
@@ -34,10 +44,13 @@ and hands each chapter to the viewer as a physical object.
 | lucide-react | 1.x | icons |
 | tailwindcss | 4.x | CSS-first config (see below) |
 
-**Tailwind v4 note:** v4 has no `tailwind.config.ts` by default. All theme tokens are
-declared once in `@theme` inside `src/app/globals.css`, which generates the utilities
-(`bg-surface`, `text-display`, `border-line`, …). A separate JS config would be a second
-source of truth, so there isn't one. 3D tokens live in `src/styles/tokens3d.ts`.
+**Design tokens:** `src/styles/tokens3d.ts` is the single source for colour, spacing,
+type, motion, spatial constants and material profiles, used directly by the 3D scene,
+motion/react and the share images. `npm run tokens` generates `src/styles/tokens.css`
+(custom properties + Tailwind v4 `@theme`, which produces `bg-surface`, `text-display`,
+`ease-editorial` …), imported by `globals.css`. `npm run lint` runs `tokens:check`
+first and fails if the CSS is stale, so the DOM and WebGL values can't drift. There is no
+`tailwind.config.ts`.
 
 **Upgrade guard:** React 19.4+ is outside R3F 9.8's peer range. Check R3F's peer deps
 before bumping React.
@@ -138,7 +151,7 @@ transitions are dropped and the latest section wins.
 
 ```
 src/
-  app/            layout.tsx, page.tsx, globals.css (tokens), opengraph-image (P7)
+  app/            layout.tsx, page.tsx, globals.css, opengraph-image (P7)
   config/         sections.ts — ordered section registry shared by DOM and 3D
   data/           portfolio.ts — typed content (P2)
   components/
@@ -151,7 +164,7 @@ src/
     controller/   AvatarController.ts, states (P4)
     props/        IdCard, Tablet, Certificate, Laptop, Diploma, Phone (P5)
   lib/            store.ts (zustand), useSectionObserver.ts (P6)
-  styles/         tokens3d.ts
+  styles/         tokens3d.ts (source) → tokens.css (generated)
 public/
   models/avatar.glb
   resume.pdf
@@ -192,7 +205,7 @@ one leadership role (Leading University Computer Club VP).
 - **Reduced motion:** the arm snaps between poses, the prop still scales in,
   and there is no breathing or sway.
 - **Debug (`?debug=rig`):** keys `1`–`6` select section props and `0` clears.
-  `window.__avatar` is the controller, and a brass arrow shows the palm normal.
+  `window.__avatar` is the controller, and a steel arrow shows the palm normal.
 
 ## 8. Presentation props (Phase 5)
 
@@ -324,3 +337,28 @@ with `NEXT_TEST_WASM=1 npm run build` (`loadBindings().isWasm === true`). Node 2
   - `[slug]` reads params inside `<Suspense>` (ISR with Cache Components), so posts published after the
     build render on first visit and are then cached.
   - The proxy answers unknown, draft and scheduled slugs with a real 404 before streaming starts.
+
+## 15. Midnight Blue redesign (design system, framing, motion)
+
+Audit, decisions and results: `docs/DESIGN-AUDIT.md`.
+
+- **Tokens:** `src/styles/tokens3d.ts` → `npm run tokens` → `src/styles/tokens.css`
+  (imported by `globals.css`). Lint fails if the generated file is stale.
+- **Editorial grid:** line A is the column edge (indices, dates, hanging headlines),
+  line B is `--hang` (88 px from md). Primitives in `components/ui/Editorial.tsx`
+  (`Eyebrow`, `HangRow`, `Period`). Column width is `--column-w` (50%, 56% at xl);
+  the stage takes the rest.
+- **Framing:** `src/three/framing.ts` — `fitRegion(region, viewport, insets, anchor)`
+  solves a straight-on camera so a world region fits the canvas minus DOM insets.
+  Regions (`framing`), insets (`stageInsets`) and anchors (`framingAnchor`) live in
+  the tokens. To re-measure after changing the avatar or a prop, load `/?debug=rig`
+  and read bounds from `window.__three.scene`.
+- **Motion layers:** CSS and motion/react use `easing.editorial`
+  (cubic-bezier(0.16, 1, 0.3, 1)); fixed-duration WebGL moves evaluate the same curve
+  with `ease.editorial`; continuous, retargetable follows (camera, bones, prop facing)
+  use `dampFactor`. No idle loops except the avatar's breathing, which reduced motion
+  turns off.
+- **Lighting/materials:** `materialProfiles` (matte graphite, satin aluminium, brushed
+  steel, neutral ceramic, controlled metal) feed the prop roles in `materials`. Only the
+  key light casts shadows, and only on the high quality tier.
+

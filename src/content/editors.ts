@@ -21,7 +21,7 @@ export const EDITORS: EditorDef[] = [
     label: "Section headings",
     keys: ["sections"],
     description:
-      "Navigation labels, section titles and 3D stage captions. Wrap a word in *asterisks* for the brass accent.",
+      "Navigation labels, section titles and 3D stage captions. Wrap a word in *asterisks* for the Steel Blue serif accent.",
   },
   {
     slug: "experience",

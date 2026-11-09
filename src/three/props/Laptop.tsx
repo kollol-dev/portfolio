@@ -46,7 +46,7 @@ export function Laptop() {
           <Mat kind="bezel" />
         </Panel>
         <Panel w={0.095} h={0.056} r={0.004} position={[0, -0.058, 0]}>
-          <meshPhysicalMaterial color="#232328" metalness={0.6} roughness={0.25} />
+          <meshPhysicalMaterial color="#202733" metalness={0.6} roughness={0.25} />
         </Panel>
       </group>
 
@@ -62,16 +62,16 @@ export function Laptop() {
         <group position={[0, 0, 0]}>
           {/* Browser chrome */}
           <Panel w={SCREEN_W} h={0.014} position={[0, top - 0.007, UI - 0.0002]}>
-            <meshBasicMaterial color="#18181d" toneMapped={false} />
+            <meshBasicMaterial color="#161c26" toneMapped={false} />
           </Panel>
-          {["#55555e", "#44444c", "#3a3a42"].map((c, i) => (
+          {["#5a6473", "#46505f", "#3a4453"].map((c, i) => (
             <Dot key={c} position={[left + 0.009 + i * 0.006, top - 0.007, UI]} r={0.0017} color={c} />
           ))}
           <Label position={[0, top - 0.007, UI]} size={0.0042} font="mono" color={palette3d.textMuted} anchorX="center">
             architecture / overview
           </Label>
 
-          <Label position={[left + 0.015, top - 0.033, UI]} size={0.0155} font="serif">
+          <Label position={[left + 0.015, top - 0.033, UI]} size={0.0148} font="display" letterSpacing={-0.02}>
             {project.name}
           </Label>
           <Label
@@ -90,7 +90,7 @@ export function Laptop() {
             return (
               <group key={label}>
                 <Panel w={boxW} h={0.03} r={0.003} position={[x, rowY, UI - 0.0001]}>
-                  <meshBasicMaterial color={i === 2 ? "#2a241b" : "#1c1c22"} toneMapped={false} />
+                  <meshBasicMaterial color={i === 2 ? "#23324a" : "#1a212d"} toneMapped={false} />
                 </Panel>
                 <Label
                   position={[x, rowY, UI + 0.0001]}
@@ -113,7 +113,7 @@ export function Laptop() {
             );
           })}
 
-          <Rule from={[left + 0.015, SCREEN_Y - 0.055]} to={[-left - 0.015, SCREEN_Y - 0.055]} z={UI} color="#2a2a31" />
+          <Rule from={[left + 0.015, SCREEN_Y - 0.055]} to={[-left - 0.015, SCREEN_Y - 0.055]} z={UI} color="#262e3a" />
           <Label
             position={[left + 0.015, SCREEN_Y - 0.067, UI]}
             size={0.0042}

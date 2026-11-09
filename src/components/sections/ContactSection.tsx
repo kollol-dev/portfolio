@@ -1,4 +1,4 @@
-import { ArrowUpRight, Download, Mail } from "lucide-react";
+import { ArrowUpRight, Download } from "lucide-react";
 import { displayUrl, type Portfolio } from "@/data/portfolio";
 import { Section } from "@/components/ui/Section";
 import { sectionMeta } from "@/config/sections";
@@ -15,24 +15,24 @@ export function ContactSection({ content }: { content: Portfolio }) {
   return (
     <Section meta={sectionMeta(content, "contact")}>
       <Reveal>
-        {intro ? <p className="text-lead text-pretty text-text-muted">{intro}</p> : null}
+        {intro ? <p className="max-w-(--body-max) text-lead text-pretty text-text-muted md:ml-(--hang)">{intro}</p> : null}
 
+        {/* The one large statement in this chapter: the address itself, hanging on the column edge. */}
         <a
           href={`mailto:${profile.email}`}
-          className="group mt-10 flex items-center justify-between gap-4 border-y border-line py-6 text-text transition-colors duration-(--dur-base) hover:text-accent-strong"
+          className="group mt-12 flex items-end justify-between gap-4 border-b border-line pb-6 text-text transition-colors duration-(--dur-base) hover:border-accent hover:text-accent-strong"
         >
-          <span className="flex min-w-0 items-center gap-4">
-            <Mail className="size-5 shrink-0 text-accent" aria-hidden strokeWidth={1.5} />
-            <span className="truncate font-display text-[clamp(1.5rem,1rem+2vw,2.25rem)]">{profile.email}</span>
+          <span className="min-w-0 truncate text-[clamp(1.5rem,0.9rem+2.4vw,3rem)] leading-none font-medium tracking-[-0.03em]">
+            {profile.email}
           </span>
           <ArrowUpRight
-            className="size-5 shrink-0 transition-transform duration-(--dur-base) ease-out-expo group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+            className="size-5 shrink-0 transition-transform duration-(--dur-base) ease-editorial group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
             aria-hidden
             strokeWidth={1.5}
           />
         </a>
 
-        <ul className="divide-y divide-line border-b border-line">
+        <ul className="divide-y divide-line border-b border-line md:ml-(--hang)">
           {profiles.map((s) => (
             <li key={s.kind}>
               <a
@@ -52,7 +52,7 @@ export function ContactSection({ content }: { content: Portfolio }) {
           ))}
         </ul>
       </Reveal>
-      <div className="mt-10">
+      <div className="mt-10 md:pl-(--hang)">
         <LinkButton
           href={profile.resumePath}
           download="Kollol-Chakraborty-Resume.pdf"

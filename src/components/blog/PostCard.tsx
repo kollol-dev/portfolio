@@ -6,7 +6,7 @@ import { formatDate, postPath, readingMinutes, type Post } from "@/data/blog";
 export function PostCard({ post, headingLevel = "h2" }: { post: Post; headingLevel?: "h2" | "h3" }) {
   const Heading = headingLevel;
   return (
-    <article className="group relative flex flex-col rounded-md border border-line bg-surface p-6 transition-colors duration-(--dur-base) hover:border-line-strong">
+    <article className="group relative flex flex-col border-t border-line pt-6 transition-colors duration-(--dur-base) hover:border-accent">
       <p className="font-mono text-micro tracking-wider text-text-subtle uppercase">
         <span className="text-accent">{post.category}</span> ·{" "}
         <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time> · {readingMinutes(post.body)} min read

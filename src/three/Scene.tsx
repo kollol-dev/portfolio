@@ -50,6 +50,7 @@ export default function Scene({ onContextLost }: SceneProps) {
     <div className="absolute inset-0">
       <Canvas
         dpr={quality === "low" ? renderBudget.lightDpr : renderBudget.dpr}
+        shadows={quality === "high" ? "soft" : false}
         camera={{ fov: cam.fov, position: [...cam.position], near: cam.near, far: cam.far }}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
         onCreated={({ gl }) => {

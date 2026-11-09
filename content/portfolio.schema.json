@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Portfolio content",
-  "description": "Everything shown on the site. Text starting with \"[PLACEHOLDER]\" shows as a dashed TBD box. Wrap words in *asterisks* in section titles for the brass italic accent.",
+  "description": "Everything shown on the site. Text starting with \"[PLACEHOLDER]\" shows as a dashed TBD box. Wrap words in *asterisks* in section titles for the Steel Blue serif accent.",
   "type": "object",
   "required": [
     "profile",
@@ -48,7 +48,7 @@
         },
         "title": {
           "type": "string",
-          "description": "Heading. Wrap a word in *asterisks* for the brass italic accent."
+          "description": "Heading. Wrap a word in *asterisks* for the Steel Blue serif accent."
         },
         "stageCaption": {
           "type": "string",
@@ -88,7 +88,7 @@
         },
         "lastName": {
           "$ref": "#/definitions/text",
-          "description": "Second line of the hero name, in brass italic."
+          "description": "Second line of the hero name, in the Bodoni Moda italic accent."
         },
         "title": {
           "$ref": "#/definitions/text",

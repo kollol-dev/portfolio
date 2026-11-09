@@ -1,130 +1,19 @@
 @import "tailwindcss";
 
 /* =========================================================================
-   DESIGN TOKENS — single source of truth for the DOM.
-   3D counterparts (lighting, materials) live in src/styles/tokens3d.ts and
-   reuse the same hex values so the canvas and the page read as one system.
-   The site is intentionally dark-only (art direction), so there is no
-   light-mode token set.
+   DESIGN TOKENS live in src/styles/tokens3d.ts (shared with the 3D scene).
+   tokens.css is generated from it — run `npm run tokens` after changing
+   them; `npm run lint` fails if it is stale. Dark-only by art direction.
    ========================================================================= */
+@import "../styles/tokens.css";
 
-:root {
-  /* Surfaces */
-  --c-bg: #0a0a0c;
-  --c-surface: #111114;
-  --c-elevated: #17171b;
-  --c-inset: #070708;
-
-  /* Lines (1px hairlines) */
-  --c-line: rgb(255 255 255 / 0.08);
-  --c-line-strong: rgb(255 255 255 / 0.14);
-
-  /* Text */
-  --c-text: #ededef;
-  --c-text-muted: #9a9aa3;
-  --c-text-subtle: #8a8a93; /* stays AA (≥4.5:1) on --c-bg */
-  --c-text-faint: #55555e; /* decorative only, never body copy */
-
-  /* Accent — warm brass, used sparingly (links, active markers, focus) */
-  --c-accent: #c8a97e;
-  --c-accent-strong: #e0c39a;
-  --c-accent-soft: rgb(200 169 126 / 0.12);
-
-  /* Secondary — cool steel, for data/meta highlights */
-  --c-steel: #8fa3b8;
-
-  /* Status */
-  --c-ok: #7fb59a;
-
-  /* Layout */
-  --gutter: clamp(1rem, 4vw, 3rem);
-  --section-py: clamp(5rem, 14vh, 10rem);
-  --nav-h: 4rem;
-  --stage-h: 30svh; /* mobile/tablet 3D band; 0 on desktop or when hidden */
-  --content-max: 38rem; /* left editorial column measure */
-
-  /* Motion */
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-  --dur-fast: 160ms;
-  --dur-base: 320ms;
-  --dur-slow: 640ms;
-
-  color-scheme: dark;
-}
-
+/* The reader can hide the mobile 3D band. */
 html[data-stage="off"] {
   --stage-h: 0px;
 }
 
 html[data-stage="off"] #stage {
   border-bottom-width: 0;
-}
-
-@media (min-width: 64rem) {
-  :root {
-    --stage-h: 0px;
-  }
-}
-
-@theme inline {
-  /* Colors → bg-bg, text-text-muted, border-line, etc. */
-  --color-bg: var(--c-bg);
-  --color-surface: var(--c-surface);
-  --color-elevated: var(--c-elevated);
-  --color-inset: var(--c-inset);
-  --color-line: var(--c-line);
-  --color-line-strong: var(--c-line-strong);
-  --color-text: var(--c-text);
-  --color-text-muted: var(--c-text-muted);
-  --color-text-subtle: var(--c-text-subtle);
-  --color-text-faint: var(--c-text-faint);
-  --color-accent: var(--c-accent);
-  --color-accent-strong: var(--c-accent-strong);
-  --color-accent-soft: var(--c-accent-soft);
-  --color-steel: var(--c-steel);
-  --color-ok: var(--c-ok);
-
-  /* Fonts (wired up via next/font in layout.tsx) */
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
-  --font-display: var(--font-instrument-serif), ui-serif, Georgia, serif;
-
-  /* Fluid editorial type scale */
-  --text-micro: 0.6875rem; /* 11px — mono eyebrow labels */
-  --text-micro--line-height: 1rem;
-  --text-micro--letter-spacing: 0.08em;
-  --text-caption: 0.8125rem; /* 13px */
-  --text-caption--line-height: 1.25rem;
-  --text-body: 1rem;
-  --text-body--line-height: 1.65;
-  --text-lead: clamp(1.0625rem, 0.95rem + 0.4vw, 1.25rem);
-  --text-lead--line-height: 1.6;
-  --text-h3: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
-  --text-h3--line-height: 1.3;
-  --text-h2: clamp(2rem, 1.5rem + 2vw, 3.25rem);
-  --text-h2--line-height: 1.08;
-  --text-h2--letter-spacing: -0.02em;
-  --text-display: clamp(2.75rem, 1.6rem + 5vw, 6rem);
-  --text-display--line-height: 0.98;
-  --text-display--letter-spacing: -0.03em;
-
-  /* Radii — restrained, industrial */
-  --radius-xs: 2px;
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
-
-  /* Breakpoints — split-screen layout begins at lg */
-  --breakpoint-sm: 40rem;
-  --breakpoint-md: 48rem;
-  --breakpoint-lg: 64rem;
-  --breakpoint-xl: 80rem;
-  --breakpoint-2xl: 96rem;
-
-  /* Motion */
-  --ease-out-expo: var(--ease-out-expo);
-  --ease-in-out-quad: var(--ease-in-out);
 }
 
 /* ------------------------------------------------------------------------- */
@@ -203,24 +92,31 @@ html[data-stage="off"] #stage {
   }
 }
 
-@keyframes badge-sway {
-  0%,
-  100% {
-    transform: rotate(-1.4deg);
+/* One damped swing as the card comes to rest on its lanyard: it arrives, it
+   settles, it stops. (No idle loop: motion here marks the entrance only.) */
+@keyframes badge-settle {
+  0% {
+    transform: rotate(2.6deg);
   }
-  50% {
-    transform: rotate(1.4deg);
+  38% {
+    transform: rotate(-1.2deg);
+  }
+  68% {
+    transform: rotate(0.45deg);
+  }
+  100% {
+    transform: rotate(0deg);
   }
 }
 
 @layer components {
-  /* ID card lanyard: charcoal strap, brass stitching, name woven down it. */
+  /* ID card lanyard: slate strap, steel stitching, name woven down it. */
   .lanyard-strap {
     position: relative;
     overflow: hidden;
     background:
-      linear-gradient(90deg, transparent 2px, rgb(200 169 126 / 0.35) 2px 3px, transparent 3px calc(100% - 3px), rgb(200 169 126 / 0.35) calc(100% - 3px) calc(100% - 2px), transparent calc(100% - 2px)),
-      linear-gradient(90deg, #17171b, #222228 50%, #17171b);
+      linear-gradient(90deg, transparent 2px, color-mix(in srgb, var(--c-accent) 35%, transparent) 2px 3px, transparent 3px calc(100% - 3px), color-mix(in srgb, var(--c-accent) 35%, transparent) calc(100% - 3px) calc(100% - 2px), transparent calc(100% - 2px)),
+      linear-gradient(90deg, color-mix(in srgb, var(--c-surface) 60%, var(--c-bg)), var(--c-surface) 50%, color-mix(in srgb, var(--c-surface) 60%, var(--c-bg)));
     mask-image: linear-gradient(to bottom, transparent, #000 45%);
   }
   .lanyard-strap > span {
@@ -235,20 +131,16 @@ html[data-stage="off"] #stage {
     letter-spacing: 0.18em;
     text-transform: uppercase;
     white-space: nowrap;
-    color: rgb(200 169 126 / 0.55);
+    color: color-mix(in srgb, var(--c-accent) 60%, transparent);
   }
 
-  /* The badge sways gently on its lanyard; holds still under the pointer. */
-  .badge-sway {
+  /* The badge hangs from the lanyard's ring. */
+  .badge-hang {
     transform-origin: 50% 0;
   }
   @media (prefers-reduced-motion: no-preference) {
-    .badge-sway {
-      animation: badge-sway 6s var(--ease-in-out) infinite;
-    }
-    .badge-sway:hover,
-    .badge-sway:focus-within {
-      animation-play-state: paused;
+    .badge-hang {
+      animation: badge-settle 1.6s var(--ease-editorial) 0.7s both;
     }
   }
 
@@ -256,11 +148,12 @@ html[data-stage="off"] #stage {
      Stagger with style={{ "--d": "120ms" }}. */
   @media (prefers-reduced-motion: no-preference) {
     .rise {
-      animation: rise 900ms var(--ease-out-expo) both;
+      animation: rise var(--dur-hero) var(--ease-editorial) both;
       animation-delay: var(--d, 0ms);
     }
     .scroll-cue-line {
-      animation: scroll-cue 2.4s var(--ease-in-out) infinite;
+      /* Three pulses to point the way, then still: no endless loop beside the text. */
+      animation: scroll-cue 2.4s var(--ease-in-out) 1.2s 3 both;
     }
   }
 
@@ -272,6 +165,16 @@ html[data-stage="off"] #stage {
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--c-text-subtle);
+  }
+
+  /* Bodoni Moda editorial contrast. The only way the serif enters the page:
+     accent words in headings, the hero surname, pull quotes. Bodoni's high
+     contrast needs neutral tracking, so it resets the heading's tight spacing. */
+  .editorial {
+    font-family: var(--font-editorial);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.01em;
   }
 
   .hairline {
@@ -302,8 +205,9 @@ html[data-stage="off"] #stage {
     margin-top: 2.4em;
     font-family: var(--font-display);
     font-size: clamp(1.6rem, 1.3rem + 1vw, 2.1rem);
-    line-height: 1.15;
-    letter-spacing: -0.01em;
+    font-weight: 500;
+    line-height: 1.12;
+    letter-spacing: -0.025em;
   }
   .prose-article h3 {
     margin-top: 2em;
@@ -359,6 +263,9 @@ html[data-stage="off"] #stage {
     border-left: 1px solid var(--c-accent);
     padding-left: 1.2em;
     color: var(--c-text);
+    font-family: var(--font-editorial);
+    font-size: 1.2em;
+    line-height: 1.45;
     font-style: italic;
   }
   .prose-article code {

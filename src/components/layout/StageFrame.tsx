@@ -12,9 +12,9 @@ export function StageFrame({ children }: { children?: React.ReactNode }) {
     <aside
       id="stage"
       aria-hidden
-      className="pointer-events-none fixed inset-x-0 top-(--nav-h) z-30 h-(--stage-h) overflow-hidden border-b border-line bg-bg transition-[height] duration-(--dur-slow) ease-out-expo lg:inset-y-0 lg:right-0 lg:left-auto lg:z-0 lg:h-auto lg:w-1/2 lg:border-b-0 lg:border-l"
+      className="pointer-events-none fixed inset-x-0 top-(--nav-h) z-30 h-(--stage-h) overflow-hidden border-b border-line bg-bg transition-[height] duration-(--dur-slow) ease-editorial lg:inset-y-0 lg:right-0 lg:left-auto lg:z-0 lg:h-auto lg:w-[calc(100%-var(--column-w))] lg:border-b-0 lg:border-l"
     >
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_42%,#17171b_0%,var(--c-bg)_70%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_42%,color-mix(in_srgb,var(--c-surface)_45%,var(--c-bg))_0%,var(--c-bg)_70%)]" />
       <div className="absolute inset-x-[18%] bottom-[14%] hidden h-10 rounded-[50%] bg-[radial-gradient(closest-side,rgb(255_255_255/0.05),transparent)] lg:block" />
       <div className="absolute inset-0">{children}</div>
       <StageCaption />

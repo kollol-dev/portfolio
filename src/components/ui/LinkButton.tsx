@@ -27,13 +27,13 @@ export function LinkButton({
     <a
       {...rest}
       {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-      className={`group inline-flex min-h-11 items-center gap-2 rounded-sm px-4 text-caption font-medium transition-colors duration-(--dur-base) ease-out-expo ${variants[variant]} ${className}`}
+      className={`group inline-flex min-h-11 items-center gap-2 rounded-sm px-4 text-caption font-medium transition-colors duration-(--dur-base) ease-editorial ${variants[variant]} ${className}`}
     >
       {children}
       {icon ? (
         <span
           aria-hidden
-          className="transition-transform duration-(--dur-base) ease-out-expo group-hover:translate-x-0.5"
+          className="transition-transform duration-(--dur-base) ease-editorial group-hover:translate-x-0.5"
         >
           {icon}
         </span>
